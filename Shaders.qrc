@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="Phong">
+    <file>per-fragment-phong.fs.glsl</file>
+    <file>per-fragment-phong.vs.glsl</file>
+  </qresource>
+</RCC>

@@ -23,12 +23,12 @@ void Renderer::initializeGL()
 	initializeOpenGLFunctions();
 
     // sets the background clour
-    glClearColor(0.7f, 0.7f, 1.0f, 1.0f);
+    glClearColor(0.7f, 0.7f, 0.7f, 1.0f);
 
     // links to and compiles the shaders, used for drawing simple objects
     m_program = new QOpenGLShaderProgram(this);
-    m_program->addShaderFromSourceFile(QOpenGLShader::Vertex, "per-fragment-phong.vs.glsl");
-    m_program->addShaderFromSourceFile(QOpenGLShader::Fragment, "per-fragment-phong.fs.glsl");
+    m_program->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/Shaders/Phong/per-fragment-phong.vs.glsl");
+    m_program->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/Shaders/Phong/per-fragment-phong.fs.glsl");
     m_program->link();
     m_posAttr = m_program->attributeLocation("position_attr");
     m_colAttr = m_program->attributeLocation("colour_attr");
@@ -37,6 +37,24 @@ void Renderer::initializeGL()
     m_VMatrixUniform = m_program->uniformLocation("view_matrix");
     m_MMatrixUniform = m_program->uniformLocation("model_matrix");
     m_programID = m_program->programId();
+
+    generateBorderTriangles();
+    glGenBuffers(1, &vao);
+    glGenBuffers(3, vbo);        // size of vbo
+
+    //glBindVertexArray(vao);     // http://stackoverflow.com/questions/19963131/cant-find-glgenbuffers-glbindbuffer-etc-in-qopenglfunctions-h visit this to fix the issue
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, triVertices.size()*sizeof(GLfloat), &triVertices[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, triColours.size()*sizeof(GLfloat), &triColours[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+    glBufferData(GL_ARRAY_BUFFER, triNormals.size()*sizeof(GLfloat), &triNormals[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(m_norAttr, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 }
 
@@ -77,16 +95,17 @@ void Renderer::paintGL()
     // Here's some test code that draws red triangles at the
     // corners of the game board.
 
-    generateBorderTriangles();
+    //generateBorderTriangles(); //moved to initializeGL()
+    //generateFace();
 
     // draw border
     if (triVertices.size() > 0)
     {
         // pass in the list of vertices and their associated colours
         // 3 coordinates per vertex, or per colour
-        glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, &triVertices[0]);
-        glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, &triColours[0]);
-        glVertexAttribPointer(m_norAttr, 3, GL_FLOAT, GL_FALSE, 0, &triNormals[0]);
+//        glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, &triVertices[0]);
+//        glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, &triColours[0]);
+//        glVertexAttribPointer(m_norAttr, 3, GL_FLOAT, GL_FALSE, 0, &triNormals[0]);
 
         glEnableVertexAttribArray(m_posAttr);
         glEnableVertexAttribArray(m_colAttr);
@@ -140,18 +159,35 @@ void Renderer::generateBorderTriangles()
         1.0, 0.0, 0.0,
         0.0, 1.0, 0.0,
 
+//        0.0, 1.0, 0.0, // This was added to complete a square
+//        1.0, 1.0, 0.0,
+//        1.0, 0.0, 0.0,
+
         9.0, 0.0, 0.0,  // bottom right triangle
         10.0, 0.0, 0.0,
         10.0, 1.0, 0.0,
+
+//        9.0, 1.0, 0.0,  // This was added to complete a square
+//        10.0, 1.0, 0.0,
+//        9.0, 0.0, 0.0,
 
         0.0, 19.0, 0.0, // top left triangle
         1.0, 20.0, 0.0,
         0.0, 20.0, 0.0,
 
+//        0.0, 19.0, 0.0, // This was added to complete a square
+//        1.0, 19.0, 0.0,
+//        1.0, 20.0, 0.0,
+
         10.0, 19.0, 0.0,    // top right triangle
         10.0, 20.0, 0.0,
-        9.0, 20.0, 0.0 };
-    triVertices.insert(triVertices.end(), vectList, vectList + 3*4*3); // 36 items in array
+        9.0, 20.0, 0.0,
+
+//        9.0, 19.0, 0.0,  // This was added to complete a square
+//        10.0, 19.0, 0.0,
+//        9.0, 20.0, 0.0
+    };
+    triVertices.insert(triVertices.end(), vectList, vectList + 3*4*3); // 36 items in array NOTE the 8 was a 4
 
     // shader supports per-vertex colour; add colour for each vertex add colours to colour list - use current colour
     QColor borderColour = Qt::red;
@@ -162,6 +198,45 @@ void Renderer::generateBorderTriangles()
         triColours.insert(triColours.end(), colourList, colourList + 3); // 3 coordinates per vertex
         triNormals.insert(triNormals.end(), normalList, normalList + 3); // 3 coordinates per vertex
     }
+
+}
+
+void Renderer::generateFace()
+{
+//    // make sure array lists are clear to start with
+//    triVertices.clear();
+//    triColours.clear();
+
+//    // add vertices to rectangle list
+//    float vectList [] = {
+//        0.0, 0.0, 0.0,  // bottom left triangle
+//        1.0, 0.0, 0.0,
+//        0.0, 1.0, 0.0,
+
+//        0.0, 1.0, 0.0, // This was added to complete a square
+//        1.0, 1.0, 0.0,
+//        1.0, 0.0, 0.0,
+
+//        0.0, 1.0, 0.0,  // bottom left triangle
+//        1.0, 1.0, 0.0,
+//        0.0, 2.0, 0.0,
+
+//        0.0, 2.0, 0.0, // This was added to complete a square
+//        1.0, 2.0, 0.0,
+//        1.0, 1.0, 0.0
+//    };
+
+//    triVertices.insert(triVertices.end(), vectList, vectList + 3*4*3); // 36 items in array NOTE the 8 was a 4
+
+//    // shader supports per-vertex colour; add colour for each vertex add colours to colour list - use current colour
+//    QColor borderColour = Qt::red;
+//    float colourList [] = { (float)borderColour.redF(), (float)borderColour.greenF(), (float)borderColour.blueF() };
+//    float normalList [] = { 0.0f, 0.0f, 1.0f }; // facing viewer
+//    for (int v = 0; v < 4 * 3; v++)
+//    {
+//        triColours.insert(triColours.end(), colourList, colourList + 3); // 3 coordinates per vertex
+//        triNormals.insert(triNormals.end(), normalList, normalList + 3); // 3 coordinates per vertex
+//    }
 
 }
 

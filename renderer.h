@@ -66,6 +66,9 @@ private:
     GLuint m_VMatrixUniform; // view matrix
     GLuint m_PMatrixUniform; // projection matrix
 
+    GLuint vao;
+    GLuint vbo[3];          // for position color normal
+
     QOpenGLShaderProgram *m_program;
 
     // for storing triangle vertices and colours
@@ -78,6 +81,7 @@ private:
 
     // helper function for drawing bordering triangles
     void generateBorderTriangles();
+    void generateFace();
 
 };
 

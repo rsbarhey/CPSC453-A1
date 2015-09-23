@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>494</width>
+    <height>743</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>494</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionNewGame"/>
+    <addaction name="actionReset"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuDraw">
+    <property name="title">
+     <string>Draw</string>
+    </property>
+    <addaction name="actionWireframe"/>
+    <addaction name="actionFace"/>
+    <addaction name="actionMulticolor"/>
+   </widget>
+   <widget class="QMenu" name="menuGame">
+    <property name="title">
+     <string>Game</string>
+    </property>
+    <addaction name="actionPause"/>
+    <addaction name="actionSpeedUp"/>
+    <addaction name="actionSlowDown"/>
+    <addaction name="actionAutoIncrease"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuDraw"/>
+   <addaction name="menuGame"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="statusTip">
+    <string>Quits the application</string>
+   </property>
+   <property name="shortcut">
+    <string>Q</string>
+   </property>
+  </action>
+  <action name="actionNewGame">
+   <property name="text">
+    <string>New Game</string>
+   </property>
+   <property name="statusTip">
+    <string>Start a new game</string>
+   </property>
+   <property name="shortcut">
+    <string>N</string>
+   </property>
+  </action>
+  <action name="actionReset">
+   <property name="text">
+    <string>Reset</string>
+   </property>
+   <property name="statusTip">
+    <string>Reset the view of the game</string>
+   </property>
+   <property name="shortcut">
+    <string>R</string>
+   </property>
+  </action>
+  <action name="actionWireframe">
+   <property name="text">
+    <string>Wireframe</string>
+   </property>
+   <property name="statusTip">
+    <string>Draw the game in wireframe mode</string>
+   </property>
+   <property name="shortcut">
+    <string>W</string>
+   </property>
+  </action>
+  <action name="actionFace">
+   <property name="text">
+    <string>Face</string>
+   </property>
+   <property name="statusTip">
+    <string>Draw the game in face mode</string>
+   </property>
+   <property name="shortcut">
+    <string>F</string>
+   </property>
+  </action>
+  <action name="actionMulticolor">
+   <property name="text">
+    <string>Multicolored</string>
+   </property>
+   <property name="statusTip">
+    <string>Draw the game where each face of a cube has a differnet color</string>
+   </property>
+   <property name="shortcut">
+    <string>M</string>
+   </property>
+  </action>
+  <action name="actionPause">
+   <property name="text">
+    <string>Pause</string>
+   </property>
+   <property name="statusTip">
+    <string>Pause the game</string>
+   </property>
+   <property name="shortcut">
+    <string>P</string>
+   </property>
+  </action>
+  <action name="actionSpeedUp">
+   <property name="text">
+    <string>Speed Up</string>
+   </property>
+   <property name="statusTip">
+    <string>Increase the speed of the game play</string>
+   </property>
+   <property name="shortcut">
+    <string>PgUp</string>
+   </property>
+  </action>
+  <action name="actionSlowDown">
+   <property name="text">
+    <string>Slow Down</string>
+   </property>
+   <property name="statusTip">
+    <string>Decrease the speed of the game play</string>
+   </property>
+   <property name="shortcut">
+    <string>PgDown</string>
+   </property>
+  </action>
+  <action name="actionAutoIncrease">
+   <property name="text">
+    <string>Auto-Increase</string>
+   </property>
+   <property name="statusTip">
+    <string>Slowly and automatically increase the speed of the game play</string>
+   </property>
+   <property name="shortcut">
+    <string>A</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

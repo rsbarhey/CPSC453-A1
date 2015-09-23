@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/Shaders/Phong">
+        <file>per-fragment-phong.vs.glsl</file>
+        <file>per-fragment-phong.fs.glsl</file>
+    </qresource>
+</RCC>
