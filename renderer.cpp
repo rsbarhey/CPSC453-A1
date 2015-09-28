@@ -1,4 +1,5 @@
 #include "renderer.h"
+#include "Shapes.h"
 #include <QTextStream>
 #include <QOpenGLBuffer>
 #include <cmath>
@@ -38,7 +39,8 @@ void Renderer::initializeGL()
     m_MMatrixUniform = m_program->uniformLocation("model_matrix");
     m_programID = m_program->programId();
 
-    generateBorderTriangles();
+    //generateBorderTriangles();
+    generateFace();
     glGenBuffers(1, &vao);
     glGenBuffers(3, vbo);        // size of vbo
 
@@ -159,33 +161,17 @@ void Renderer::generateBorderTriangles()
         1.0, 0.0, 0.0,
         0.0, 1.0, 0.0,
 
-//        0.0, 1.0, 0.0, // This was added to complete a square
-//        1.0, 1.0, 0.0,
-//        1.0, 0.0, 0.0,
-
         9.0, 0.0, 0.0,  // bottom right triangle
         10.0, 0.0, 0.0,
         10.0, 1.0, 0.0,
-
-//        9.0, 1.0, 0.0,  // This was added to complete a square
-//        10.0, 1.0, 0.0,
-//        9.0, 0.0, 0.0,
 
         0.0, 19.0, 0.0, // top left triangle
         1.0, 20.0, 0.0,
         0.0, 20.0, 0.0,
 
-//        0.0, 19.0, 0.0, // This was added to complete a square
-//        1.0, 19.0, 0.0,
-//        1.0, 20.0, 0.0,
-
         10.0, 19.0, 0.0,    // top right triangle
         10.0, 20.0, 0.0,
         9.0, 20.0, 0.0,
-
-//        9.0, 19.0, 0.0,  // This was added to complete a square
-//        10.0, 19.0, 0.0,
-//        9.0, 20.0, 0.0
     };
     triVertices.insert(triVertices.end(), vectList, vectList + 3*4*3); // 36 items in array NOTE the 8 was a 4
 
@@ -203,41 +189,20 @@ void Renderer::generateBorderTriangles()
 
 void Renderer::generateFace()
 {
-//    // make sure array lists are clear to start with
-//    triVertices.clear();
-//    triColours.clear();
+    Shapes shape;
+    vector<float> cube = shape.Cube();
+    vector<float> color = shape.CubeColor();
 
-//    // add vertices to rectangle list
-//    float vectList [] = {
-//        0.0, 0.0, 0.0,  // bottom left triangle
-//        1.0, 0.0, 0.0,
-//        0.0, 1.0, 0.0,
+    triVertices.insert(triVertices.end(), cube.begin(), cube.end()); // 36 items in array NOTE the 8 was a 4
 
-//        0.0, 1.0, 0.0, // This was added to complete a square
-//        1.0, 1.0, 0.0,
-//        1.0, 0.0, 0.0,
+    // shader supports per-vertex colour; add colour for each vertex add colours to colour list - use current colour
 
-//        0.0, 1.0, 0.0,  // bottom left triangle
-//        1.0, 1.0, 0.0,
-//        0.0, 2.0, 0.0,
-
-//        0.0, 2.0, 0.0, // This was added to complete a square
-//        1.0, 2.0, 0.0,
-//        1.0, 1.0, 0.0
-//    };
-
-//    triVertices.insert(triVertices.end(), vectList, vectList + 3*4*3); // 36 items in array NOTE the 8 was a 4
-
-//    // shader supports per-vertex colour; add colour for each vertex add colours to colour list - use current colour
-//    QColor borderColour = Qt::red;
-//    float colourList [] = { (float)borderColour.redF(), (float)borderColour.greenF(), (float)borderColour.blueF() };
-//    float normalList [] = { 0.0f, 0.0f, 1.0f }; // facing viewer
-//    for (int v = 0; v < 4 * 3; v++)
-//    {
-//        triColours.insert(triColours.end(), colourList, colourList + 3); // 3 coordinates per vertex
-//        triNormals.insert(triNormals.end(), normalList, normalList + 3); // 3 coordinates per vertex
-//    }
-
+    triColours.insert(triColours.end(), color.begin(), color.end());
+    float normalList [] = { 0.0f, 0.0f, 1.0f }; // facing viewer
+    for (int v = 0; v < cube.size()/3; v++)
+    {
+        triNormals.insert(triNormals.end(), normalList, normalList + 3); // 3 coordinates per vertex
+    }
 }
 
 // override mouse press event

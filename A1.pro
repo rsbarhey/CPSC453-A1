@@ -15,11 +15,13 @@ INCLUDEPATH += .
 SOURCES += main.cpp\
         MainWindow.cpp \
     renderer.cpp \
-    game.cpp
+    game.cpp \
+    Shapes.cpp
 
 HEADERS  += MainWindow.h \
     renderer.h \
-    game.h
+    game.h \
+    Shapes.h
 
 FORMS    += MainWindow.ui
 
