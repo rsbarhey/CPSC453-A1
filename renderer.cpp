@@ -90,13 +90,11 @@ void Renderer::paintGL()
     // it appear centered in the window.
 
     model_matrix.translate(-5.0f, -12.0f, 0.0f);
-    glUniformMatrix4fv(m_MMatrixUniform, 1, false, model_matrix.data());
+    //glUniformMatrix4fv(m_MMatrixUniform, 1, false, model_matrix.data());
 
     // Not implemented: actually draw the current game state.
     // Here's some test code that draws red triangles at the
     // corners of the game board.
-
-    //generateBorderTriangles(); //moved to initializeGL()
 
     // draw border
     if (quadVertices.size() > 0)
@@ -105,8 +103,30 @@ void Renderer::paintGL()
         glEnableVertexAttribArray(m_colAttr);
         glEnableVertexAttribArray(m_norAttr);
 
-        // draw triangles
-        glDrawArrays(GL_QUADS, 0, quadVertices.size()/3); // 3 coordinates per vertex
+        // translated back once along the x axis since we start with a translation
+        model_matrix.translate(-1.0, 0.0, 0.0);
+        for (int i = 0; i < 10; i++)
+        {
+            model_matrix.translate(1.0, 0.0, 0.0);
+            glUniformMatrix4fv(m_MMatrixUniform, 1, false, model_matrix.data());
+            glDrawArrays(GL_QUADS, 0, quadVertices.size()/3); // 3 coordinates per vertex
+        }
+
+        for (int i = 0; i < 20; i++)
+        {
+            model_matrix.translate(0.0, 1.0, 0.0);
+            glUniformMatrix4fv(m_MMatrixUniform, 1, false, model_matrix.data());
+            glDrawArrays(GL_QUADS, 0, quadVertices.size()/3); // 3 coordinates per vertex
+        }
+
+        // Reset back to the bottom left corner (reversing from the previous two loops
+        model_matrix.translate(-9.0, -20.0, 0.0);
+        for (int i = 0; i < 20; i++)
+        {
+            model_matrix.translate(0.0, 1.0, 0.0);
+            glUniformMatrix4fv(m_MMatrixUniform, 1, false, model_matrix.data());
+            glDrawArrays(GL_QUADS, 0, quadVertices.size()/3); // 3 coordinates per vertex
+        }
 
         glDisableVertexAttribArray(m_norAttr);
         glDisableVertexAttribArray(m_colAttr);
