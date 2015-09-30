@@ -39,7 +39,6 @@ void Renderer::initializeGL()
     m_MMatrixUniform = m_program->uniformLocation("model_matrix");
     m_programID = m_program->programId();
 
-    //generateBorderTriangles();
     generateFace();
     glGenBuffers(1, &vao);
     glGenBuffers(3, vbo);        // size of vbo
@@ -47,15 +46,15 @@ void Renderer::initializeGL()
     //glBindVertexArray(vao);     // http://stackoverflow.com/questions/19963131/cant-find-glgenbuffers-glbindbuffer-etc-in-qopenglfunctions-h visit this to fix the issue
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glBufferData(GL_ARRAY_BUFFER, triVertices.size()*sizeof(GLfloat), &triVertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, quadVertices.size()*sizeof(GLfloat), &quadVertices[0], GL_STATIC_DRAW);
     glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-    glBufferData(GL_ARRAY_BUFFER, triColours.size()*sizeof(GLfloat), &triColours[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, quadColors.size()*sizeof(GLfloat), &quadColors[0], GL_STATIC_DRAW);
     glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
-    glBufferData(GL_ARRAY_BUFFER, triNormals.size()*sizeof(GLfloat), &triNormals[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, quadNormals.size()*sizeof(GLfloat), &quadNormals[0], GL_STATIC_DRAW);
     glVertexAttribPointer(m_norAttr, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
 }
@@ -98,23 +97,16 @@ void Renderer::paintGL()
     // corners of the game board.
 
     //generateBorderTriangles(); //moved to initializeGL()
-    //generateFace();
 
     // draw border
-    if (triVertices.size() > 0)
+    if (quadVertices.size() > 0)
     {
-        // pass in the list of vertices and their associated colours
-        // 3 coordinates per vertex, or per colour
-//        glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, &triVertices[0]);
-//        glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, &triColours[0]);
-//        glVertexAttribPointer(m_norAttr, 3, GL_FLOAT, GL_FALSE, 0, &triNormals[0]);
-
         glEnableVertexAttribArray(m_posAttr);
         glEnableVertexAttribArray(m_colAttr);
         glEnableVertexAttribArray(m_norAttr);
 
         // draw triangles
-        glDrawArrays(GL_TRIANGLES, 0, triVertices.size()/3); // 3 coordinates per vertex
+        glDrawArrays(GL_QUADS, 0, quadVertices.size()/3); // 3 coordinates per vertex
 
         glDisableVertexAttribArray(m_norAttr);
         glDisableVertexAttribArray(m_colAttr);
@@ -193,15 +185,15 @@ void Renderer::generateFace()
     vector<float> cube = shape.Cube();
     vector<float> color = shape.CubeColor();
 
-    triVertices.insert(triVertices.end(), cube.begin(), cube.end()); // 36 items in array NOTE the 8 was a 4
+    quadVertices.insert(quadVertices.end(), cube.begin(), cube.end()); // 36 items in array NOTE the 8 was a 4
 
     // shader supports per-vertex colour; add colour for each vertex add colours to colour list - use current colour
 
-    triColours.insert(triColours.end(), color.begin(), color.end());
+    quadColors.insert(quadColors.end(), color.begin(), color.end());
     float normalList [] = { 0.0f, 0.0f, 1.0f }; // facing viewer
     for (int v = 0; v < cube.size()/3; v++)
     {
-        triNormals.insert(triNormals.end(), normalList, normalList + 3); // 3 coordinates per vertex
+        quadNormals.insert(quadNormals.end(), normalList, normalList + 3); // 3 coordinates per vertex
     }
 }
 

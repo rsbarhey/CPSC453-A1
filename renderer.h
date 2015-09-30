@@ -76,6 +76,11 @@ private:
     vector<GLfloat> triColours;
     vector<GLfloat> triNormals;
 
+    // for storing quad vertices and colors
+    vector<GLfloat> quadVertices;
+    vector<GLfloat> quadColors;
+    vector<GLfloat> quadNormals;
+
     // helper function for loading shaders
     GLuint loadShader(GLenum type, const char *source);
 
