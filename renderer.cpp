@@ -1,5 +1,4 @@
 #include "renderer.h"
-#include "Cube.h"
 #include "game.h"
 #include <QTextStream>
 #include <QOpenGLBuffer>
@@ -63,21 +62,8 @@ void Renderer::initializeGL()
     m_MMatrixUniform = m_program->uniformLocation("model_matrix");
     m_programID = m_program->programId();
 
-    generateCube();
     glGenBuffers(3, vbo);        // size of vbo
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glBufferData(GL_ARRAY_BUFFER, quadVertices.size()*sizeof(GLfloat), &quadVertices[0], GL_STATIC_DRAW);
-    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-    glBufferData(GL_ARRAY_BUFFER, quadColors.size()*sizeof(GLfloat), &quadColors[0], GL_STATIC_DRAW);
-    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
-    glBufferData(GL_ARRAY_BUFFER, quadNormals.size()*sizeof(GLfloat), &quadNormals[0], GL_STATIC_DRAW);
-    glVertexAttribPointer(m_norAttr, 3, GL_FLOAT, GL_FALSE, 0, 0);
-
+    setupCube();
 }
 
 // called by the Qt GUI system, to allow OpenGL drawing commands
@@ -117,7 +103,7 @@ void Renderer::paintGL()
     // corners of the game board.
 
     // draw border
-    if (quadVertices.size() > 0)
+    if (cube.CubeVertices().size() > 0)
     {
         glEnableVertexAttribArray(m_posAttr);
         glEnableVertexAttribArray(m_colAttr);
@@ -129,14 +115,14 @@ void Renderer::paintGL()
         {
             model_matrix.translate(1.0, 0.0, 0.0);
             glUniformMatrix4fv(m_MMatrixUniform, 1, false, model_matrix.data());
-            glDrawArrays(GL_QUADS, 0, quadVertices.size()/3); // 3 coordinates per vertex
+            glDrawArrays(GL_QUADS, 0, cube.CubeVertices().size()/3); // 3 coordinates per vertex
         }
 
         for (int i = 0; i < 20; i++)
         {
             model_matrix.translate(0.0, 1.0, 0.0);
             glUniformMatrix4fv(m_MMatrixUniform, 1, false, model_matrix.data());
-            glDrawArrays(GL_QUADS, 0, quadVertices.size()/3); // 3 coordinates per vertex
+            glDrawArrays(GL_QUADS, 0, cube.CubeVertices().size()/3); // 3 coordinates per vertex
         }
 
         // Reset back to the bottom left corner (reversing from the previous two loops
@@ -145,7 +131,7 @@ void Renderer::paintGL()
         {
             model_matrix.translate(0.0, 1.0, 0.0);
             glUniformMatrix4fv(m_MMatrixUniform, 1, false, model_matrix.data());
-            glDrawArrays(GL_QUADS, 0, quadVertices.size()/3); // 3 coordinates per vertex
+            glDrawArrays(GL_QUADS, 0, cube.CubeVertices().size()/3); // 3 coordinates per vertex
         }
 
         // reset it back to 0,1,0  (the one is an offset so the game blocks doesn't get clipped with the game border
@@ -159,7 +145,7 @@ void Renderer::paintGL()
                 {
                     model_matrix.translate((float)j, (float)i, 0.0);
                     glUniformMatrix4fv(m_MMatrixUniform, 1, false, model_matrix.data());
-                    glDrawArrays(GL_QUADS, 0, quadVertices.size()/3); // 3 coordinates per vertex
+                    glDrawArrays(GL_QUADS, 0, cube.CubeVertices().size()/3); // 3 coordinates per vertex
                     model_matrix.translate((float)-j, (float)-i, 0.0);
                 }
             }
@@ -236,22 +222,19 @@ void Renderer::generateBorderTriangles()
 
 }
 
-void Renderer::generateCube()
+void Renderer::setupCube()
 {
-    quadVertices.clear();
-    quadColors.clear();
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+    glBufferData(GL_ARRAY_BUFFER, cube.CubeVertices().size()*sizeof(GLfloat), &cube.CubeVertices()[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-    Cube shape;
-    vector<float> cube = shape.CubeVertices();
-    vector<float> color = shape.CubeColor();
-    vector<float> normal = shape.CubeNormals();
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+    glBufferData(GL_ARRAY_BUFFER, cube.CubeColor().size()*sizeof(GLfloat), &cube.CubeColor()[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-    quadVertices.insert(quadVertices.end(), cube.begin(), cube.end()); // 36 items in array NOTE the 8 was a 4
-
-    // shader supports per-vertex colour; add colour for each vertex add colours to colour list - use current colour
-
-    quadColors.insert(quadColors.end(), color.begin(), color.end());
-    quadNormals.insert(quadNormals.end(), normal.begin(), normal.end());
+    glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+    glBufferData(GL_ARRAY_BUFFER, cube.CubeNormals().size()*sizeof(GLfloat), &cube.CubeNormals()[0], GL_STATIC_DRAW);
+    glVertexAttribPointer(m_norAttr, 3, GL_FLOAT, GL_FALSE, 0, 0);
 }
 
 // override mouse press event

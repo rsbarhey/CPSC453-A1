@@ -15,8 +15,10 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLShader>
 #include <QMouseEvent>
+#include "Cube.h"
 
 class Game;
+
 
 using namespace std;
 
@@ -84,19 +86,15 @@ private:
     vector<GLfloat> triColours;
     vector<GLfloat> triNormals;
 
-    // for storing quad vertices and colors
-    vector<GLfloat> quadVertices;
-    vector<GLfloat> quadColors;
-    vector<GLfloat> quadNormals;
-
     Game* _game;
+    Cube cube;
 
     // helper function for loading shaders
     GLuint loadShader(GLenum type, const char *source);
 
     // helper function for drawing bordering triangles
     void generateBorderTriangles();
-    void generateCube();
+    void setupCube();
 
 };
 
