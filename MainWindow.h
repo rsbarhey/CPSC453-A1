@@ -25,6 +25,8 @@ private:
 
     // Connects ui actions
     void connectActions();
+    void startNewGame();
+    void tick();                // Tick the game
 };
 
 #endif // MAINWINDOW_H

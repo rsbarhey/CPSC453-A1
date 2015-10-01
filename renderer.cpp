@@ -39,11 +39,8 @@ void Renderer::initializeGL()
     m_MMatrixUniform = m_program->uniformLocation("model_matrix");
     m_programID = m_program->programId();
 
-    generateFace();
-    glGenBuffers(1, &vao);
+    generateCube();
     glGenBuffers(3, vbo);        // size of vbo
-
-    //glBindVertexArray(vao);     // http://stackoverflow.com/questions/19963131/cant-find-glgenbuffers-glbindbuffer-etc-in-qopenglfunctions-h visit this to fix the issue
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
     glBufferData(GL_ARRAY_BUFFER, quadVertices.size()*sizeof(GLfloat), &quadVertices[0], GL_STATIC_DRAW);
@@ -90,7 +87,6 @@ void Renderer::paintGL()
     // it appear centered in the window.
 
     model_matrix.translate(-5.0f, -12.0f, 0.0f);
-    //glUniformMatrix4fv(m_MMatrixUniform, 1, false, model_matrix.data());
 
     // Not implemented: actually draw the current game state.
     // Here's some test code that draws red triangles at the
@@ -199,8 +195,11 @@ void Renderer::generateBorderTriangles()
 
 }
 
-void Renderer::generateFace()
+void Renderer::generateCube()
 {
+    quadVertices.clear();
+    quadColors.clear();
+
     Shapes shape;
     vector<float> cube = shape.Cube();
     vector<float> color = shape.CubeColor();

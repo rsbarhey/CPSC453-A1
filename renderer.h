@@ -86,7 +86,7 @@ private:
 
     // helper function for drawing bordering triangles
     void generateBorderTriangles();
-    void generateFace();
+    void generateCube();
 
 };
 

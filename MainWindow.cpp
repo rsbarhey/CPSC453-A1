@@ -35,4 +35,16 @@ MainWindow::~MainWindow()
 void MainWindow::connectActions()
 {
     connect(ui->actionQuit, &QAction::triggered, qApp, &QCoreApplication::quit);
+    connect(ui->actionNewGame, &QAction::triggered, this, &MainWindow::startNewGame);
+    connect(ui->actionTick, &QAction::triggered, this, &MainWindow::tick);
+}
+
+void MainWindow::startNewGame()
+{
+    // initialize the game
+}
+
+void MainWindow::tick()
+{
+    // tick the game
 }

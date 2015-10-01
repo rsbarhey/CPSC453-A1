@@ -47,6 +47,8 @@
     <addaction name="actionSpeedUp"/>
     <addaction name="actionSlowDown"/>
     <addaction name="actionAutoIncrease"/>
+    <addaction name="separator"/>
+    <addaction name="actionTick"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuDraw"/>
@@ -161,6 +163,14 @@
    </property>
    <property name="shortcut">
     <string>A</string>
+   </property>
+  </action>
+  <action name="actionTick">
+   <property name="text">
+    <string>Tick</string>
+   </property>
+   <property name="shortcut">
+    <string>T</string>
    </property>
   </action>
  </widget>
