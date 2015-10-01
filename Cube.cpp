@@ -48,17 +48,31 @@ Cube::Cube(QObject *parent) : QObject(parent)
     }
 }
 
-vector<float> Cube::CubeVertices()
+const vector<float>& Cube::CubeVertices()
 {
     return m_cube;
 }
 
-vector<float> Cube::CubeColor()
+const vector<float>& Cube::CubeColor()
 {
     return m_cubeColor;
 }
 
-vector<float> Cube::CubeNormals()
+const vector<float>& Cube::CubeNormals()
 {
     return m_cubeNormals;
+}
+
+void Cube::ChangeCubeColor(int id)
+{
+    Q_UNUSED(id);
+    m_cubeColor.clear();
+    QColor color = Qt::red;
+    float colourList [] = { (float)color.redF(), (float)color.greenF(), (float)color.blueF() };
+
+    for (int v = 0; v < m_cube.size()/3; v++)
+    {
+        // to change color change them every four iteration
+        m_cubeColor.insert(m_cubeColor.end(), colourList, colourList + 3); // 3 coordinates per vertex
+    }
 }

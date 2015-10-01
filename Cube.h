@@ -11,13 +11,12 @@ class Cube : public QObject
 public:
     explicit Cube(QObject *parent = 0);
 
-    vector<float> CubeVertices();
-    vector<float> CubeColor();
-    vector<float> CubeNormals();
+    // returning a const reference (const because we don't want it changing outside this class, ref because we don't want a copy of the class members
+    const vector<float>& CubeVertices();
+    const vector<float>& CubeColor();
+    const vector<float>& CubeNormals();
 
-signals:
-
-public slots:
+    void ChangeCubeColor(int id);
 
 private:
     vector<float> m_cube;
