@@ -1,5 +1,6 @@
 #include "renderer.h"
 #include "Shapes.h"
+#include "game.h"
 #include <QTextStream>
 #include <QOpenGLBuffer>
 #include <cmath>
@@ -8,13 +9,36 @@
 Renderer::Renderer(QWidget *parent)
     : QOpenGLWidget(parent)
 {
-
+    _game = NULL;
 }
 
 // constructor
 Renderer::~Renderer()
 {
 
+}
+
+void Renderer::CreateNewGame()
+{
+    if(_game == NULL)
+    {
+        _game = new Game(10, 25);
+    }
+    else
+    {
+        _game->reset();
+    }
+}
+
+void Renderer::Tick()
+{
+    if(_game == NULL)
+    {
+        return;
+    }
+    _game->tick();
+
+    update();
 }
 
 // called once by Qt GUI system, to allow initialization for OpenGL requirements
@@ -122,6 +146,23 @@ void Renderer::paintGL()
             model_matrix.translate(0.0, 1.0, 0.0);
             glUniformMatrix4fv(m_MMatrixUniform, 1, false, model_matrix.data());
             glDrawArrays(GL_QUADS, 0, quadVertices.size()/3); // 3 coordinates per vertex
+        }
+
+        // reset it back to 0,1,0  (the one is an offset so the game blocks doesn't get clipped with the game border
+        model_matrix.translate(0.0, -19.0, 0.0);
+
+        for (int i = 0; i<24; i++)
+        {
+            for (int j = 0; j<10; j++)
+            {
+                if (_game != NULL && _game->get(i, j) != -1)
+                {
+                    model_matrix.translate((float)j, (float)i, 0.0);
+                    glUniformMatrix4fv(m_MMatrixUniform, 1, false, model_matrix.data());
+                    glDrawArrays(GL_QUADS, 0, quadVertices.size()/3); // 3 coordinates per vertex
+                    model_matrix.translate((float)-j, (float)-i, 0.0);
+                }
+            }
         }
 
         glDisableVertexAttribArray(m_norAttr);

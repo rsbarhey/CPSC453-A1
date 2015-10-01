@@ -42,9 +42,11 @@ void MainWindow::connectActions()
 void MainWindow::startNewGame()
 {
     // initialize the game
+    _renderer->CreateNewGame();
 }
 
 void MainWindow::tick()
 {
     // tick the game
+    _renderer->Tick();
 }

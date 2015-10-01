@@ -16,6 +16,8 @@
 #include <QOpenGLShader>
 #include <QMouseEvent>
 
+class Game;
+
 using namespace std;
 
 class Renderer : public QOpenGLWidget, protected QOpenGLFunctions
@@ -30,6 +32,12 @@ public:
 
     // destructor
     virtual ~Renderer();
+
+    //Initialize the game or reset it
+    void CreateNewGame();
+
+    //Ticks the game
+    void Tick();
 
 protected:
 
@@ -80,6 +88,8 @@ private:
     vector<GLfloat> quadVertices;
     vector<GLfloat> quadColors;
     vector<GLfloat> quadNormals;
+
+    Game* _game;
 
     // helper function for loading shaders
     GLuint loadShader(GLenum type, const char *source);
