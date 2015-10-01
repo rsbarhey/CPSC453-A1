@@ -1,5 +1,5 @@
 #include "renderer.h"
-#include "Shapes.h"
+#include "Cube.h"
 #include "game.h"
 #include <QTextStream>
 #include <QOpenGLBuffer>
@@ -241,20 +241,17 @@ void Renderer::generateCube()
     quadVertices.clear();
     quadColors.clear();
 
-    Shapes shape;
-    vector<float> cube = shape.Cube();
+    Cube shape;
+    vector<float> cube = shape.CubeVertices();
     vector<float> color = shape.CubeColor();
+    vector<float> normal = shape.CubeNormals();
 
     quadVertices.insert(quadVertices.end(), cube.begin(), cube.end()); // 36 items in array NOTE the 8 was a 4
 
     // shader supports per-vertex colour; add colour for each vertex add colours to colour list - use current colour
 
     quadColors.insert(quadColors.end(), color.begin(), color.end());
-    float normalList [] = { 0.0f, 0.0f, 1.0f }; // facing viewer
-    for (int v = 0; v < cube.size()/3; v++)
-    {
-        quadNormals.insert(quadNormals.end(), normalList, normalList + 3); // 3 coordinates per vertex
-    }
+    quadNormals.insert(quadNormals.end(), normal.begin(), normal.end());
 }
 
 // override mouse press event
