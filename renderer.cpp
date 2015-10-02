@@ -197,7 +197,8 @@ void Renderer::paintGL()
             {
                 if (m_game != NULL && m_game->get(i, j) != -1)
                 {
-                    changeCubeColor(m_game->get(i, j));
+                    //changeCubeColor(m_game->get(i, j));
+                    setMultipleColors(m_game->get(i, j));
                     boxMatrix.translate((float)j, (float)i, 0.0);
                     glUniformMatrix4fv(m_MMatrixUniform, 1, false, boxMatrix.data());
                     glDrawArrays(GL_QUADS, 0, cube.CubeVertices().size()/3); // 3 coordinates per vertex
@@ -321,11 +322,11 @@ void Renderer::changeCubeColor(int id)
     switchColorVbo(id);
 }
 
-void Renderer::setMultipleColors()
+void Renderer::setMultipleColors(int id)
 {
-    cube.SetMutlipleColors();
-    setupColorVbo(9);
-    switchColorVbo(9);
+    cube.SetMutlipleColors(id);
+    setupColorVbo(9+id);
+    switchColorVbo(9+id);
 }
 
 // override mouse press event

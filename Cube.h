@@ -18,7 +18,7 @@ public:
 
     void ChangeCubeColor(int id);
 
-    void SetMutlipleColors();
+    void SetMutlipleColors(int id);
 
 private:
     vector<float> m_cube;

@@ -80,7 +80,7 @@ void Cube::ChangeCubeColor(int id)
     }
 }
 
-void Cube::SetMutlipleColors()
+void Cube::SetMutlipleColors(int id)
 {
     m_cubeColor.clear();
     QColor color;
@@ -91,8 +91,12 @@ void Cube::SetMutlipleColors()
     {
         if(v % 4 == 0)
         {
-            color = colors[faceCount];
-            faceCount++;
+            if(id>5)
+            {
+                id = 0;
+            }
+            color = colors[id];
+            id++;
         }
 
         float colourList [] = { (float)color.redF(), (float)color.greenF(), (float)color.blueF() };
