@@ -37,8 +37,11 @@ private:
     // Connects ui actions
     void connectActions();
     void startNewGame();
+    
     void tick();                // Tick the game
     void pause();
+    void increaseSpeed();
+    void decreaseSpeed();
 
     //Draw modes
     void wireframeMode();

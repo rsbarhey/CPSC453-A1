@@ -87,6 +87,8 @@ void MainWindow::connectActions()
     connect(ui->actionNewGame, &QAction::triggered, this, &MainWindow::startNewGame);
     connect(ui->actionWireframe, &QAction::triggered, this, &MainWindow::wireframeMode);
     connect(ui->actionFace, &QAction::triggered, this, &MainWindow::faceMode);
+    connect(ui->actionSpeedUp, &QAction::triggered, this, &MainWindow::increaseSpeed);
+    connect(ui->actionSlowDown, &QAction::triggered, this, &MainWindow::decreaseSpeed);
 }
 
 void MainWindow::startNewGame()
@@ -125,4 +127,19 @@ void MainWindow::wireframeMode()
 void MainWindow::faceMode()
 {
     m_renderer->FaceMode();
+}
+
+void MainWindow::increaseSpeed()
+{
+    int time = m_timer->interval() - 50;
+    if(time > 0)
+    {
+       m_timer->setInterval(time);
+    }
+}
+
+void MainWindow::decreaseSpeed()
+{
+    int time = m_timer->interval() + 50;
+    m_timer->setInterval(time);
 }
