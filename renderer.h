@@ -116,6 +116,7 @@ private:
     void setupColorVbo(int id);
     void switchColorVbo(int id);
     void changeCubeColor(int id);
+    void setMultipleColors();
 
 };
 

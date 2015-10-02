@@ -74,14 +74,15 @@ void Renderer::DropPiece()
 
 void Renderer::WireframeMode()
 {
+    // For some reason this doesn't work and needs to be toggled in the paint function
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    this->update();
+    update();
 }
 
 void Renderer::FaceMode()
 {
     glPolygonMode(GL_FRONT_AND_BACK, GL_POINT | GL_FILL);
-    this->update();
+    update();
 }
 
 void Renderer::MulticoloredMode()
@@ -120,6 +121,7 @@ void Renderer::paintGL()
     // Clear the screen buffers
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
 
     // Set the current shader program
 
@@ -317,6 +319,13 @@ void Renderer::changeCubeColor(int id)
     cube.ChangeCubeColor(id);
     setupColorVbo(id);      // bind correct colorVbo
     switchColorVbo(id);
+}
+
+void Renderer::setMultipleColors()
+{
+    cube.SetMutlipleColors();
+    setupColorVbo(9);
+    switchColorVbo(9);
 }
 
 // override mouse press event
