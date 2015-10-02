@@ -1,6 +1,9 @@
 #include "Cube.h"
 #include <QColor>
 
+const static QList<QColor> colors = QList<QColor>() << Qt::red << Qt::darkRed << Qt::yellow << Qt::darkBlue
+                                                       << Qt::blue << Qt::darkCyan << Qt::cyan << Qt::darkGray;
+
 Cube::Cube(QObject *parent) : QObject(parent)
 {
     float cube[] = {
@@ -66,51 +69,33 @@ const vector<float>& Cube::CubeNormals()
 void Cube::ChangeCubeColor(int id)
 {
     m_cubeColor.clear();
-    QColor color;
-    if(id == 0)
-    {
-        color = Qt::darkCyan;
-    }
-
-    else if(id == 1)
-    {
-        color = Qt::red;
-    }
-
-    else if(id == 2)
-    {
-        color = Qt::cyan;
-    }
-
-    else if(id == 3)
-    {
-        color = Qt::yellow;
-    }
-
-    else if(id == 4)
-    {
-        color = Qt::blue;
-    }
-
-    else if(id == 5)
-    {
-        color = Qt::darkBlue;
-    }
-
-    else if(id == 6)
-    {
-        color = Qt::darkYellow;
-    }
-
-    else if(id == 7)
-    {
-        color = Qt::darkGray;
-    }
+    QColor color = colors[id];
 
     float colourList [] = { (float)color.redF(), (float)color.greenF(), (float)color.blueF() };
 
     for (int v = 0; v < m_cube.size()/3; v++)
     {
+        // to change color change them every four iteration
+        m_cubeColor.insert(m_cubeColor.end(), colourList, colourList + 3); // 3 coordinates per vertex
+    }
+}
+
+void Cube::SetMutlipleColors()
+{
+    m_cubeColor.clear();
+    QColor color;
+    int faceCount = 0;
+
+
+    for (int v = 0; v < m_cube.size()/3; v++)
+    {
+        if(v % 4 == 0)
+        {
+            color = colors[faceCount];
+            faceCount++;
+        }
+
+        float colourList [] = { (float)color.redF(), (float)color.greenF(), (float)color.blueF() };
         // to change color change them every four iteration
         m_cubeColor.insert(m_cubeColor.end(), colourList, colourList + 3); // 3 coordinates per vertex
     }
