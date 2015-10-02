@@ -41,6 +41,22 @@ public:
     //Ticks the game
     void Tick();
 
+    // Methods for rotating the block clockwise and counter clockwise
+    void RotateBlockCW();
+    void RotateBlockCCW();
+
+    // Methods for moving the blocks left and right
+    void MoveBlockLeft();
+    void MoveBlockRight();
+
+    // Drop the piece
+    void DropPiece();
+
+    // Draw modes
+    void WireframeMode();
+    void FaceMode();
+    void MulticoloredMode();
+
 protected:
 
     // override fundamental drawing functions
@@ -79,6 +95,8 @@ private:
     GLuint vao;
     GLuint vbo[3];          // for position color normal
 
+    QMap<int, GLuint> colorVbos;
+
     QOpenGLShaderProgram *m_program;
 
     // for storing triangle vertices and colours
@@ -86,7 +104,7 @@ private:
     vector<GLfloat> triColours;
     vector<GLfloat> triNormals;
 
-    Game* _game;
+    Game* m_game;
     Cube cube;
 
     // helper function for loading shaders
@@ -95,6 +113,9 @@ private:
     // helper function for drawing bordering triangles
     void generateBorderTriangles();
     void setupCube();
+    void setupColorVbo(int id);
+    void switchColorVbo(int id);
+    void changeCubeColor(int id);
 
 };
 

@@ -8,36 +8,85 @@
 Renderer::Renderer(QWidget *parent)
     : QOpenGLWidget(parent)
 {
-    _game = NULL;
+    m_game = NULL;
 }
 
 // constructor
 Renderer::~Renderer()
 {
-
+    delete m_game;
 }
 
 void Renderer::CreateNewGame()
 {
-    if(_game == NULL)
+    if(m_game == NULL)
     {
-        _game = new Game(10, 25);
+        m_game = new Game(10, 24);
     }
     else
     {
-        _game->reset();
+        m_game->reset();
     }
 }
 
 void Renderer::Tick()
 {
-    if(_game == NULL)
+    if(m_game == NULL)
     {
         return;
     }
-    _game->tick();
+    m_game->tick();
 
     update();
+}
+
+void Renderer::RotateBlockCW()
+{
+    m_game->rotateCW();
+    update();
+}
+
+void Renderer::RotateBlockCCW()
+{
+    m_game->rotateCCW();
+    update();
+}
+
+void Renderer::MoveBlockLeft()
+{
+    m_game->moveLeft();
+    update();
+}
+
+void Renderer::MoveBlockRight()
+{
+    m_game->moveRight();
+    update();
+}
+
+void Renderer::DropPiece()
+{
+    if(m_game->drop())
+    {
+        update();
+    }
+}
+
+void Renderer::WireframeMode()
+{
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    this->update();
+}
+
+void Renderer::FaceMode()
+{
+    glPolygonMode(GL_FRONT_AND_BACK, GL_POINT | GL_FILL);
+    this->update();
+}
+
+void Renderer::MulticoloredMode()
+{
+
 }
 
 // called once by Qt GUI system, to allow initialization for OpenGL requirements
@@ -62,7 +111,6 @@ void Renderer::initializeGL()
     m_MMatrixUniform = m_program->uniformLocation("model_matrix");
     m_programID = m_program->programId();
 
-    glGenBuffers(3, vbo);        // size of vbo
     setupCube();
 }
 
@@ -97,56 +145,61 @@ void Renderer::paintGL()
     // it appear centered in the window.
 
     model_matrix.translate(-5.0f, -12.0f, 0.0f);
-
     // Not implemented: actually draw the current game state.
     // Here's some test code that draws red triangles at the
     // corners of the game board.
-
     // draw border
+
+    changeCubeColor(7);
     if (cube.CubeVertices().size() > 0)
     {
         glEnableVertexAttribArray(m_posAttr);
         glEnableVertexAttribArray(m_colAttr);
         glEnableVertexAttribArray(m_norAttr);
 
+        QMatrix4x4 boxMatrix(model_matrix);
         // translated back once along the x axis since we start with a translation
-        model_matrix.translate(-1.0, 0.0, 0.0);
-        for (int i = 0; i < 10; i++)
+        boxMatrix.translate(-2.0, 0.0, 0.0);
+        for (int i = 0; i < 12; i++)
         {
-            model_matrix.translate(1.0, 0.0, 0.0);
-            glUniformMatrix4fv(m_MMatrixUniform, 1, false, model_matrix.data());
+            boxMatrix.translate(1.0, 0.0, 0.0);
+            glUniformMatrix4fv(m_MMatrixUniform, 1, false, boxMatrix.data());
             glDrawArrays(GL_QUADS, 0, cube.CubeVertices().size()/3); // 3 coordinates per vertex
         }
 
         for (int i = 0; i < 20; i++)
         {
-            model_matrix.translate(0.0, 1.0, 0.0);
-            glUniformMatrix4fv(m_MMatrixUniform, 1, false, model_matrix.data());
+            boxMatrix.translate(0.0, 1.0, 0.0);
+            glUniformMatrix4fv(m_MMatrixUniform, 1, false, boxMatrix.data());
             glDrawArrays(GL_QUADS, 0, cube.CubeVertices().size()/3); // 3 coordinates per vertex
         }
 
         // Reset back to the bottom left corner (reversing from the previous two loops
-        model_matrix.translate(-9.0, -20.0, 0.0);
+        boxMatrix.translate(-11.0, -20.0, 0.0);
         for (int i = 0; i < 20; i++)
         {
-            model_matrix.translate(0.0, 1.0, 0.0);
-            glUniformMatrix4fv(m_MMatrixUniform, 1, false, model_matrix.data());
+            boxMatrix.translate(0.0, 1.0, 0.0);
+            glUniformMatrix4fv(m_MMatrixUniform, 1, false, boxMatrix.data());
             glDrawArrays(GL_QUADS, 0, cube.CubeVertices().size()/3); // 3 coordinates per vertex
         }
 
-        // reset it back to 0,1,0  (the one is an offset so the game blocks doesn't get clipped with the game border
-        model_matrix.translate(0.0, -19.0, 0.0);
+        //reset the model back to 0,0,0
+        boxMatrix.translate(0.0, -20.0, 0.0);
+
+        // transelate one step in x and y to avoid border overlap
+        boxMatrix.translate(1.0, 1.0, 0.0);
 
         for (int i = 0; i<24; i++)
         {
             for (int j = 0; j<10; j++)
             {
-                if (_game != NULL && _game->get(i, j) != -1)
+                if (m_game != NULL && m_game->get(i, j) != -1)
                 {
-                    model_matrix.translate((float)j, (float)i, 0.0);
-                    glUniformMatrix4fv(m_MMatrixUniform, 1, false, model_matrix.data());
+                    changeCubeColor(m_game->get(i, j));
+                    boxMatrix.translate((float)j, (float)i, 0.0);
+                    glUniformMatrix4fv(m_MMatrixUniform, 1, false, boxMatrix.data());
                     glDrawArrays(GL_QUADS, 0, cube.CubeVertices().size()/3); // 3 coordinates per vertex
-                    model_matrix.translate((float)-j, (float)-i, 0.0);
+                    boxMatrix.translate((float)-j, (float)-i, 0.0);
                 }
             }
         }
@@ -224,6 +277,8 @@ void Renderer::generateBorderTriangles()
 
 void Renderer::setupCube()
 {
+    glGenBuffers(3, vbo);        // size of vbo
+
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
     glBufferData(GL_ARRAY_BUFFER, cube.CubeVertices().size()*sizeof(GLfloat), &cube.CubeVertices()[0], GL_STATIC_DRAW);
     glVertexAttribPointer(m_posAttr, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -235,6 +290,33 @@ void Renderer::setupCube()
     glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
     glBufferData(GL_ARRAY_BUFFER, cube.CubeNormals().size()*sizeof(GLfloat), &cube.CubeNormals()[0], GL_STATIC_DRAW);
     glVertexAttribPointer(m_norAttr, 3, GL_FLOAT, GL_FALSE, 0, 0);
+}
+
+void Renderer::setupColorVbo(int id)
+{
+    if(!colorVbos.contains(id))
+    {
+        GLuint colorVbo[1];
+        glGenBuffers(1, colorVbo);
+        colorVbos.insert(colorVbos.end(), id, colorVbo[0]);
+    }
+}
+
+void Renderer::switchColorVbo(int id)
+{
+    if(colorVbos.contains(id))
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, colorVbos.value(id));
+        glBufferData(GL_ARRAY_BUFFER, cube.CubeColor().size()*sizeof(GLfloat), &cube.CubeColor()[0], GL_STATIC_DRAW);
+        glVertexAttribPointer(m_colAttr, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    }
+}
+
+void Renderer::changeCubeColor(int id)
+{
+    cube.ChangeCubeColor(id);
+    setupColorVbo(id);      // bind correct colorVbo
+    switchColorVbo(id);
 }
 
 // override mouse press event

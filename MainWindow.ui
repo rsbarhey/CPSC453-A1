@@ -48,7 +48,6 @@
     <addaction name="actionSlowDown"/>
     <addaction name="actionAutoIncrease"/>
     <addaction name="separator"/>
-    <addaction name="actionTick"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuDraw"/>
@@ -89,6 +88,9 @@
    </property>
   </action>
   <action name="actionWireframe">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Wireframe</string>
    </property>
@@ -100,6 +102,12 @@
    </property>
   </action>
   <action name="actionFace">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Face</string>
    </property>
@@ -111,6 +119,9 @@
    </property>
   </action>
   <action name="actionMulticolor">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Multicolored</string>
    </property>
