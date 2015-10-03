@@ -125,6 +125,9 @@ private:
     float x,y,z;
     QMatrix4x4 roataionMatrix;
 
+    int totalScaleFactor;
+    QMatrix4x4 scalingMatrix;
+
     // helper function for loading shaders
     GLuint loadShader(GLenum type, const char *source);
 
@@ -137,6 +140,7 @@ private:
     void setMultipleColors(int id);
 
     void rotateView(int start, int end, float x = 0.0, float y = 0.0, float z = 0.0);
+    void scaleView(int start, int end);
 };
 
 #endif // RENDERER_H

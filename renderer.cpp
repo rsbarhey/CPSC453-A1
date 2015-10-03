@@ -4,6 +4,9 @@
 #include <QOpenGLBuffer>
 #include <cmath>
 
+#define MAX_SCALE_FACTOR         2125
+#define MIN_SCALE_FACTOR         -2125
+
 // constructor
 Renderer::Renderer(QWidget *parent)
     : QOpenGLWidget(parent)
@@ -17,7 +20,9 @@ Renderer::Renderer(QWidget *parent)
     persistenceTimer = new QTimer(this);
     persistenceTimer->setInterval(20);
     connect(persistenceTimer, SIGNAL(timeout()), this, SLOT(rotateView()));
+
     angle = 0.0;
+    totalScaleFactor = 0;
 }
 
 // constructor
@@ -142,6 +147,8 @@ void Renderer::paintGL()
 
     QMatrix4x4 view_matrix;
     view_matrix.translate(0.0f, 0.0f, -40.0f);
+
+    view_matrix = view_matrix * scalingMatrix;
     view_matrix = view_matrix * roataionMatrix;
 
 
@@ -389,6 +396,11 @@ void Renderer::mouseMoveEvent(QMouseEvent * event)
         rotateView(m_mouseStart, m_mouseEnd, 0.0, 0.0, 1.0);
     }
 
+    else if(m_button == Qt::LeftButton  && m_modifier == Qt::ShiftModifier)
+    {
+        scaleView(m_mouseStart, m_mouseEnd);
+    }
+
     m_mouseStart = m_mouseEnd;
 }
 
@@ -420,5 +432,26 @@ void Renderer::ResetView()
 {
     persistenceTimer->stop();
     roataionMatrix = QMatrix4x4();
+    scalingMatrix = QMatrix4x4();
     update();
+}
+
+void Renderer::scaleView(int start, int end)
+{
+    int scale;
+    if(start > end)
+    {
+        scale = -25;
+    }
+    else if(start < end)
+    {
+        scale = 25;
+    }
+
+    if(totalScaleFactor + scale >= MIN_SCALE_FACTOR && totalScaleFactor + scale <= MAX_SCALE_FACTOR)
+    {
+        totalScaleFactor += scale;
+        scalingMatrix.scale((float)scale/1000 + 1.0);
+        update();
+    }
 }
