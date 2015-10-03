@@ -107,6 +107,7 @@ void Renderer::MulticoloredMode()
 {
     polygonMode = GL_FILL;
     isMulticolored = true;
+    update();
 }
 
 // called once by Qt GUI system, to allow initialization for OpenGL requirements
