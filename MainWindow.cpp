@@ -22,6 +22,11 @@ MainWindow::MainWindow(QWidget *parent) :
     m_timer->setInterval(500);
     m_paused = false;
 
+    m_autoIncreaseTimer = new QTimer(this);
+    m_autoIncreaseTimer->setInterval(5000);
+    connect(m_autoIncreaseTimer, &QTimer::timeout, this, &MainWindow::increaseSpeed);
+    m_autoIncrease = false;
+
     // Connects actions that were created in Qt Designer to appropriate slots
     connectActions();
 
@@ -89,6 +94,7 @@ void MainWindow::connectActions()
     connect(ui->actionFace, &QAction::triggered, this, &MainWindow::faceMode);
     connect(ui->actionSpeedUp, &QAction::triggered, this, &MainWindow::increaseSpeed);
     connect(ui->actionSlowDown, &QAction::triggered, this, &MainWindow::decreaseSpeed);
+    connect(ui->actionAutoIncrease, &QAction::triggered, this, &MainWindow::autoIncreaseMode);
     connect(ui->actionReset, &QAction::triggered, this, &MainWindow::resetView);
 }
 
@@ -112,10 +118,15 @@ void MainWindow::pause()
     if(m_timer->isActive())
     {
         m_timer->stop();
+        m_autoIncreaseTimer->stop();
     }
     else
     {
         m_timer->start();
+        if(m_autoIncrease)
+        {
+            m_autoIncreaseTimer->start();
+        }
     }
     m_paused = !(m_timer->isActive());
 }
@@ -142,7 +153,24 @@ void MainWindow::increaseSpeed()
 void MainWindow::decreaseSpeed()
 {
     int time = m_timer->interval() + 50;
-    m_timer->setInterval(time);
+    if(time < 2000)
+    {
+        m_timer->setInterval(time);
+    }
+}
+
+void MainWindow::autoIncreaseMode()
+{
+    if(m_autoIncreaseTimer->isActive())
+    {
+        m_autoIncreaseTimer->stop();
+        m_autoIncrease = false;
+    }
+    else
+    {
+        m_autoIncreaseTimer->start();
+        m_autoIncrease = true;
+    }
 }
 
 void MainWindow::resetView()

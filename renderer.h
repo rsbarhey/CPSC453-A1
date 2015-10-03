@@ -105,6 +105,9 @@ private:
 
     QOpenGLShaderProgram *m_program;
 
+    GLenum polygonMode;
+    bool isMulticolored;
+
     // for storing triangle vertices and colours
     vector<GLfloat> triVertices;
     vector<GLfloat> triColours;

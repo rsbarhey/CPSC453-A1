@@ -29,6 +29,9 @@ private:
     Ui::MainWindow *ui;
     Renderer* m_renderer;
     QTimer* m_timer;
+    QTimer* m_autoIncreaseTimer;
+
+    bool m_autoIncrease;
 
     QActionGroup* m_drawGroup;
 
@@ -42,6 +45,7 @@ private:
     void pause();
     void increaseSpeed();
     void decreaseSpeed();
+    void autoIncreaseMode();
 
     //Draw modes
     void wireframeMode();

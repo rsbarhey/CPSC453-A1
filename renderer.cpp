@@ -12,6 +12,8 @@ Renderer::Renderer(QWidget *parent)
     : QOpenGLWidget(parent)
 {
     m_game = NULL;
+    polygonMode = GL_FILL;
+    isMulticolored = false;
 
     timer = new QTimer(this);
     timer->setInterval(20);
@@ -89,19 +91,22 @@ void Renderer::DropPiece()
 void Renderer::WireframeMode()
 {
     // For some reason this doesn't work and needs to be toggled in the paint function
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    polygonMode = GL_LINE;
     update();
 }
 
 void Renderer::FaceMode()
 {
-    glPolygonMode(GL_FRONT_AND_BACK, GL_POINT | GL_FILL);
+    polygonMode = GL_FILL;
+    isMulticolored = false;
     update();
 }
 
 void Renderer::MulticoloredMode()
 {
-
+    polygonMode = GL_FILL;
+    isMulticolored = true;
 }
 
 // called once by Qt GUI system, to allow initialization for OpenGL requirements
@@ -136,6 +141,8 @@ void Renderer::paintGL()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
+
+    glPolygonMode(GL_FRONT_AND_BACK, polygonMode);
 
     // Set the current shader program
 
@@ -216,8 +223,15 @@ void Renderer::paintGL()
             {
                 if (m_game != NULL && m_game->get(i, j) != -1)
                 {
-                    //changeCubeColor(m_game->get(i, j));
-                    setMultipleColors(m_game->get(i, j));
+                    if(isMulticolored)
+                    {
+                        setMultipleColors(m_game->get(i, j));
+                    }
+                    else
+                    {
+                        changeCubeColor(m_game->get(i, j));
+                    }
+
                     boxMatrix.translate((float)j, (float)i, 0.0);
                     glUniformMatrix4fv(m_MMatrixUniform, 1, false, boxMatrix.data());
                     glDrawArrays(GL_QUADS, 0, cube.CubeVertices().size()/3); // 3 coordinates per vertex
