@@ -123,7 +123,7 @@ private:
 
     float angle;
     float x,y,z;
-    QMatrix4x4 transformationMatrix;
+    QMatrix4x4 roataionMatrix;
 
     // helper function for loading shaders
     GLuint loadShader(GLenum type, const char *source);

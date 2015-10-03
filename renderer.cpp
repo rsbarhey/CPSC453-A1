@@ -142,7 +142,7 @@ void Renderer::paintGL()
 
     QMatrix4x4 view_matrix;
     view_matrix.translate(0.0f, 0.0f, -40.0f);
-    view_matrix = view_matrix * transformationMatrix;
+    view_matrix = view_matrix * roataionMatrix;
 
 
     glUniformMatrix4fv(m_VMatrixUniform, 1, false, view_matrix.data());
@@ -406,19 +406,19 @@ void Renderer::rotateView(int start, int end, float x, float y, float z)
     this->y = y;
     this->z = z;
 
-    transformationMatrix.rotate(angle, x, y, z);
+    roataionMatrix.rotate(angle, x, y, z);
     update();
 }
 
 void Renderer::rotateView()
 {
-    transformationMatrix.rotate(angle, x, y, z);
+    roataionMatrix.rotate(angle, x, y, z);
     update();
 }
 
 void Renderer::ResetView()
 {
     persistenceTimer->stop();
-    transformationMatrix = QMatrix4x4();
+    roataionMatrix = QMatrix4x4();
     update();
 }
