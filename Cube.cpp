@@ -91,7 +91,7 @@ void Cube::SetMutlipleColors(int id)
     {
         if(v % 4 == 0)
         {
-            if(id>5)
+            if(id>6)
             {
                 id = 0;
             }

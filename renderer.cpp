@@ -392,7 +392,7 @@ void Renderer::rotateView(int start, int end, float x, float y, float z)
 {
     if(start > end)
     {
-        angle = 5;
+        angle = -5;
     }
     else if(start < end)
     {
@@ -400,6 +400,5 @@ void Renderer::rotateView(int start, int end, float x, float y, float z)
     }
 
     transformationMatrix.rotate(angle, x, y, z);
-
     update();
 }
