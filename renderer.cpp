@@ -139,8 +139,9 @@ void Renderer::paintGL()
 
     QMatrix4x4 view_matrix;
     view_matrix.translate(0.0f, 0.0f, -40.0f);
+    view_matrix = view_matrix * transformationMatrix;
 
-    view_matrix.rotate(angle, rotationVector);
+
     glUniformMatrix4fv(m_VMatrixUniform, 1, false, view_matrix.data());
 
     // Not implemented: set up lighting (if necessary)
@@ -344,6 +345,7 @@ void Renderer::mousePressEvent(QMouseEvent * event)
     m_pressed = true;
     cout << "Stub: Button " << event->button() << " pressed.\n";
     m_mouseStart = event->x();
+    m_button = event->button();
 }
 
 // override mouse release event
@@ -352,6 +354,7 @@ void Renderer::mouseReleaseEvent(QMouseEvent * event)
     QTextStream cout(stdout);
     cout << "Stub: Button " << event->button() << " released.\n";
     m_pressed = false;
+    m_button = Qt::NoButton;
     if(timer->isActive())
     {
         // implement presistent rotation here
@@ -367,18 +370,36 @@ void Renderer::mouseMoveEvent(QMouseEvent * event)
     timer->start();
     m_mouseEnd = event->x();
 
-    if(m_mouseStart > m_mouseEnd)
+    if (m_button == Qt::LeftButton)
     {
-        angle += 5.0;
-        rotationVector.setY(1.0);
-        update();
+        rotateView(m_mouseStart, m_mouseEnd, 1);
     }
-    else if(m_mouseEnd > m_mouseStart)
+
+    else if(m_button == Qt::MiddleButton)
     {
-        angle -= 5.0;
-        rotationVector.setY(1.0);
-        update();
+        rotateView(m_mouseStart, m_mouseEnd, 0.0, 1.0);
+    }
+
+    else if(m_button == Qt::RightButton)
+    {
+        rotateView(m_mouseStart, m_mouseEnd, 0.0, 0.0, 1.0);
     }
 
     m_mouseStart = m_mouseEnd;
+}
+
+void Renderer::rotateView(int start, int end, float x, float y, float z)
+{
+    if(start > end)
+    {
+        angle = 5;
+    }
+    else if(start < end)
+    {
+        angle = 5;
+    }
+
+    transformationMatrix.rotate(angle, x, y, z);
+
+    update();
 }

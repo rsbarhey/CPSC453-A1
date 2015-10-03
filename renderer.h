@@ -114,9 +114,10 @@ private:
     bool m_pressed;
     int m_mouseStart;
     int m_mouseEnd;
+    Qt::MouseButton m_button;
 
     float angle;
-    QVector3D rotationVector;
+    QMatrix4x4 transformationMatrix;
 
     // helper function for loading shaders
     GLuint loadShader(GLenum type, const char *source);
@@ -129,8 +130,7 @@ private:
     void changeCubeColor(int id);
     void setMultipleColors(int id);
 
-    void stopTimer();
-
+    void rotateView(int start, int end, float x = 0.0, float y = 0.0, float z = 0.0);
 };
 
 #endif // RENDERER_H
