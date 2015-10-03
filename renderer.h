@@ -15,6 +15,8 @@
 #include <QOpenGLShaderProgram>
 #include <QOpenGLShader>
 #include <QMouseEvent>
+#include <QTimer>
+
 #include "Cube.h"
 
 class Game;
@@ -107,6 +109,15 @@ private:
     Game* m_game;
     Cube cube;
 
+    QTimer* timer;
+
+    bool m_pressed;
+    int m_mouseStart;
+    int m_mouseEnd;
+
+    float angle;
+    QVector3D rotationVector;
+
     // helper function for loading shaders
     GLuint loadShader(GLenum type, const char *source);
 
@@ -117,6 +128,8 @@ private:
     void switchColorVbo(int id);
     void changeCubeColor(int id);
     void setMultipleColors(int id);
+
+    void stopTimer();
 
 };
 

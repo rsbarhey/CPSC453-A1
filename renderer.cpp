@@ -9,6 +9,12 @@ Renderer::Renderer(QWidget *parent)
     : QOpenGLWidget(parent)
 {
     m_game = NULL;
+
+    timer = new QTimer(this);
+    timer->setInterval(20);
+    connect(timer, &QTimer::timeout, timer, &QTimer::stop);
+
+    angle = 0.0;
 }
 
 // constructor
@@ -133,6 +139,8 @@ void Renderer::paintGL()
 
     QMatrix4x4 view_matrix;
     view_matrix.translate(0.0f, 0.0f, -40.0f);
+
+    view_matrix.rotate(angle, rotationVector);
     glUniformMatrix4fv(m_VMatrixUniform, 1, false, view_matrix.data());
 
     // Not implemented: set up lighting (if necessary)
@@ -333,14 +341,22 @@ void Renderer::setMultipleColors(int id)
 void Renderer::mousePressEvent(QMouseEvent * event)
 {
     QTextStream cout(stdout);
+    m_pressed = true;
     cout << "Stub: Button " << event->button() << " pressed.\n";
+    m_mouseStart = event->x();
 }
 
 // override mouse release event
 void Renderer::mouseReleaseEvent(QMouseEvent * event)
 {
     QTextStream cout(stdout);
-    cout << "Stub: Button " << event->button() << " pressed.\n";
+    cout << "Stub: Button " << event->button() << " released.\n";
+    m_pressed = false;
+    if(timer->isActive())
+    {
+        // implement presistent rotation here
+        cout << timer->remainingTime() << "Time between move and release is 15ms.\n";
+    }
 }
 
 // override mouse move event
@@ -348,4 +364,21 @@ void Renderer::mouseMoveEvent(QMouseEvent * event)
 {
     QTextStream cout(stdout);
     cout << "Stub: Motion at " << event->x() << ", " << event->y() << ".\n";
+    timer->start();
+    m_mouseEnd = event->x();
+
+    if(m_mouseStart > m_mouseEnd)
+    {
+        angle += 5.0;
+        rotationVector.setY(1.0);
+        update();
+    }
+    else if(m_mouseEnd > m_mouseStart)
+    {
+        angle -= 5.0;
+        rotationVector.setY(1.0);
+        update();
+    }
+
+    m_mouseStart = m_mouseEnd;
 }

@@ -134,7 +134,7 @@ void MainWindow::increaseSpeed()
     int time = m_timer->interval() - 50;
     if(time > 0)
     {
-       m_timer->setInterval(time);
+        m_timer->setInterval(time);
     }
 }
 
