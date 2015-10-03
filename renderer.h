@@ -116,10 +116,10 @@ private:
     QTimer* timer;
     QTimer* persistenceTimer;
 
-    bool m_pressed;
     int m_mouseStart;
     int m_mouseEnd;
     Qt::MouseButton m_button;
+    Qt::KeyboardModifiers m_modifier;
 
     float angle;
     float x,y,z;

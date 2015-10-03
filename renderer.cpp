@@ -17,7 +17,6 @@ Renderer::Renderer(QWidget *parent)
     persistenceTimer = new QTimer(this);
     persistenceTimer->setInterval(20);
     connect(persistenceTimer, SIGNAL(timeout()), this, SLOT(rotateView()));
-
     angle = 0.0;
 }
 
@@ -347,10 +346,10 @@ void Renderer::mousePressEvent(QMouseEvent * event)
 {
     persistenceTimer->stop();
     QTextStream cout(stdout);
-    m_pressed = true;
     cout << "Stub: Button " << event->button() << " pressed.\n";
     m_mouseStart = event->x();
     m_button = event->button();
+    m_modifier = event->modifiers();
 }
 
 // override mouse release event
@@ -358,9 +357,8 @@ void Renderer::mouseReleaseEvent(QMouseEvent * event)
 {
     QTextStream cout(stdout);
     cout << "Stub: Button " << event->button() << " released.\n";
-    m_pressed = false;
     m_button = Qt::NoButton;
-    if(timer->isActive())
+    if(timer->isActive() && m_modifier != Qt::ShiftModifier)
     {
         // implement presistent rotation here
         cout << timer->remainingTime() << "Time between move and release is 15ms.\n";
@@ -376,17 +374,17 @@ void Renderer::mouseMoveEvent(QMouseEvent * event)
     timer->start();
     m_mouseEnd = event->x();
 
-    if (m_button == Qt::LeftButton)
+    if (m_button == Qt::LeftButton && m_modifier != Qt::ShiftModifier)
     {
         rotateView(m_mouseStart, m_mouseEnd, 1);
     }
 
-    else if(m_button == Qt::MiddleButton)
+    else if(m_button == Qt::MiddleButton && m_modifier != Qt::ShiftModifier)
     {
         rotateView(m_mouseStart, m_mouseEnd, 0.0, 1.0);
     }
 
-    else if(m_button == Qt::RightButton)
+    else if(m_button == Qt::RightButton && m_modifier != Qt::ShiftModifier)
     {
         rotateView(m_mouseStart, m_mouseEnd, 0.0, 0.0, 1.0);
     }
