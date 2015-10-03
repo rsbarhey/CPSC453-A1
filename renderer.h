@@ -59,6 +59,8 @@ public:
     void FaceMode();
     void MulticoloredMode();
 
+    void ResetView();
+
 protected:
 
     // override fundamental drawing functions
@@ -83,6 +85,8 @@ protected:
     // Called when the mouse moves
     virtual void mouseMoveEvent(QMouseEvent * event);
 
+private slots:
+    void rotateView();
 private:
 
     // member variables for shader manipulation
@@ -110,6 +114,7 @@ private:
     Cube cube;
 
     QTimer* timer;
+    QTimer* persistenceTimer;
 
     bool m_pressed;
     int m_mouseStart;
@@ -117,6 +122,7 @@ private:
     Qt::MouseButton m_button;
 
     float angle;
+    float x,y,z;
     QMatrix4x4 transformationMatrix;
 
     // helper function for loading shaders

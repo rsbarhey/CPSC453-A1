@@ -89,6 +89,7 @@ void MainWindow::connectActions()
     connect(ui->actionFace, &QAction::triggered, this, &MainWindow::faceMode);
     connect(ui->actionSpeedUp, &QAction::triggered, this, &MainWindow::increaseSpeed);
     connect(ui->actionSlowDown, &QAction::triggered, this, &MainWindow::decreaseSpeed);
+    connect(ui->actionReset, &QAction::triggered, this, &MainWindow::resetView);
 }
 
 void MainWindow::startNewGame()
@@ -142,4 +143,9 @@ void MainWindow::decreaseSpeed()
 {
     int time = m_timer->interval() + 50;
     m_timer->setInterval(time);
+}
+
+void MainWindow::resetView()
+{
+    m_renderer->ResetView();
 }

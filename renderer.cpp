@@ -14,6 +14,10 @@ Renderer::Renderer(QWidget *parent)
     timer->setInterval(20);
     connect(timer, &QTimer::timeout, timer, &QTimer::stop);
 
+    persistenceTimer = new QTimer(this);
+    persistenceTimer->setInterval(20);
+    connect(persistenceTimer, SIGNAL(timeout()), this, SLOT(rotateView()));
+
     angle = 0.0;
 }
 
@@ -341,6 +345,7 @@ void Renderer::setMultipleColors(int id)
 // override mouse press event
 void Renderer::mousePressEvent(QMouseEvent * event)
 {
+    persistenceTimer->stop();
     QTextStream cout(stdout);
     m_pressed = true;
     cout << "Stub: Button " << event->button() << " pressed.\n";
@@ -359,6 +364,7 @@ void Renderer::mouseReleaseEvent(QMouseEvent * event)
     {
         // implement presistent rotation here
         cout << timer->remainingTime() << "Time between move and release is 15ms.\n";
+        persistenceTimer->start();
     }
 }
 
@@ -398,7 +404,23 @@ void Renderer::rotateView(int start, int end, float x, float y, float z)
     {
         angle = 5;
     }
+    this->x = x;
+    this->y = y;
+    this->z = z;
 
     transformationMatrix.rotate(angle, x, y, z);
+    update();
+}
+
+void Renderer::rotateView()
+{
+    transformationMatrix.rotate(angle, x, y, z);
+    update();
+}
+
+void Renderer::ResetView()
+{
+    persistenceTimer->stop();
+    transformationMatrix = QMatrix4x4();
     update();
 }

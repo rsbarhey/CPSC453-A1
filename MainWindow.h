@@ -47,6 +47,8 @@ private:
     void wireframeMode();
     void faceMode();
     void multicoloredMode();
+
+    void resetView();
 };
 
 #endif // MAINWINDOW_H
