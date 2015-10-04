@@ -92,7 +92,6 @@ void MainWindow::connectActions()
     connect(ui->actionNewGame, &QAction::triggered, this, &MainWindow::startNewGame);
     connect(ui->actionWireframe, &QAction::triggered, this, &MainWindow::wireframeMode);
     connect(ui->actionFace, &QAction::triggered, this, &MainWindow::faceMode);
-    connect(ui->actionMulticolor, &QAction::triggered, this, &MainWindow::multicoloredMode);
     connect(ui->actionSpeedUp, &QAction::triggered, this, &MainWindow::increaseSpeed);
     connect(ui->actionSlowDown, &QAction::triggered, this, &MainWindow::decreaseSpeed);
     connect(ui->actionAutoIncrease, &QAction::triggered, this, &MainWindow::autoIncreaseMode);
@@ -140,11 +139,6 @@ void MainWindow::wireframeMode()
 void MainWindow::faceMode()
 {
     m_renderer->FaceMode();
-}
-
-void MainWindow::multicoloredMode()
-{
-    m_renderer->MulticoloredMode();
 }
 
 void MainWindow::increaseSpeed()
