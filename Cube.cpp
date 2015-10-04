@@ -1,8 +1,4 @@
 #include "Cube.h"
-#include <QColor>
-
-const static QList<QColor> colors = QList<QColor>() << Qt::red << Qt::darkRed << Qt::yellow << Qt::darkBlue
-                                                       << Qt::blue << Qt::darkCyan << Qt::cyan << Qt::darkGray;
 
 Cube::Cube(QObject *parent) : QObject(parent)
 {
@@ -49,6 +45,8 @@ Cube::Cube(QObject *parent) : QObject(parent)
         m_cubeColor.insert(m_cubeColor.end(), colourList, colourList + 3); // 3 coordinates per vertex
         m_cubeNormals.insert(m_cubeNormals.end(), normalList, normalList + 3); // 3 coordinates per vertex
     }
+
+    generateUniqueRandomColor();
 }
 
 const vector<float>& Cube::CubeVertices()
@@ -69,7 +67,7 @@ const vector<float>& Cube::CubeNormals()
 void Cube::ChangeCubeColor(int id)
 {
     m_cubeColor.clear();
-    QColor color = colors[id];
+    QColor color = colorList[id];
 
     float colourList [] = { (float)color.redF(), (float)color.greenF(), (float)color.blueF() };
 
@@ -84,23 +82,52 @@ void Cube::SetMutlipleColors(int id)
 {
     m_cubeColor.clear();
     QColor color;
-    int faceCount = 0;
+    int colorIndex = id * 6;
 
 
     for (int v = 0; v < m_cube.size()/3; v++)
     {
         if(v % 4 == 0)
         {
-            if(id>6)
-            {
-                id = 0;
-            }
-            color = colors[id];
-            id++;
+            color = colorList[colorIndex];
+            ++colorIndex;
         }
 
         float colourList [] = { (float)color.redF(), (float)color.greenF(), (float)color.blueF() };
         // to change color change them every four iteration
         m_cubeColor.insert(m_cubeColor.end(), colourList, colourList + 3); // 3 coordinates per vertex
+    }
+}
+
+void Cube::generateUniqueRandomColor()
+{
+    colorList.clear();
+    QList<int> redChannel, greenChannel, blueChannel;
+
+    constructColorList(redChannel);
+    constructColorList(greenChannel);
+    constructColorList(blueChannel);
+
+    int redIndex, greenIndex, blueIndex;
+    for(int i = 0; i < 42; i++)
+    {
+        redIndex = redChannel[rand() % redChannel.size()];
+        redChannel.removeAt(redIndex);
+
+        greenIndex = greenChannel[rand() % greenChannel.size()];
+        greenChannel.removeAt(greenIndex);
+
+        blueIndex = blueChannel[rand() % blueChannel.size()];
+        blueChannel.removeAt(blueIndex);
+
+        colorList.append(QColor(redIndex, greenIndex, blueIndex));
+    }
+}
+
+void Cube::constructColorList(QList<int> &list)
+{
+    for(int i = 0; i< 256 ; i++)
+    {
+        list.append(i);
     }
 }

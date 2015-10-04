@@ -196,7 +196,7 @@ void Renderer::paintGL()
             glDrawArrays(GL_QUADS, 0, cube.CubeVertices().size()/3); // 3 coordinates per vertex
         }
 
-        for (int i = 0; i < 20; i++)
+        for (int i = 0; i < 24; i++)
         {
             boxMatrix.translate(0.0, 1.0, 0.0);
             glUniformMatrix4fv(m_MMatrixUniform, 1, false, boxMatrix.data());
@@ -204,8 +204,8 @@ void Renderer::paintGL()
         }
 
         // Reset back to the bottom left corner (reversing from the previous two loops
-        boxMatrix.translate(-11.0, -20.0, 0.0);
-        for (int i = 0; i < 20; i++)
+        boxMatrix.translate(-11.0, -24.0, 0.0);
+        for (int i = 0; i < 24; i++)
         {
             boxMatrix.translate(0.0, 1.0, 0.0);
             glUniformMatrix4fv(m_MMatrixUniform, 1, false, boxMatrix.data());
@@ -213,7 +213,7 @@ void Renderer::paintGL()
         }
 
         //reset the model back to 0,0,0
-        boxMatrix.translate(0.0, -20.0, 0.0);
+        boxMatrix.translate(0.0, -24.0, 0.0);
 
         // transelate one step in x and y to avoid border overlap
         boxMatrix.translate(1.0, 1.0, 0.0);

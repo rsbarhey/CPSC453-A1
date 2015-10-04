@@ -2,6 +2,7 @@
 #define SHAPES_H
 
 #include <QObject>
+#include <QColor>
 
 using namespace std;
 
@@ -21,6 +22,11 @@ public:
     void SetMutlipleColors(int id);
 
 private:
+    void generateUniqueRandomColor();
+    void constructColorList(QList<int>& list);
+
+    QList<QColor> colorList;
+
     vector<float> m_cube;
     vector<float> m_cubeColor;
     vector<float> m_cubeNormals;
