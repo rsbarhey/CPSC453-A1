@@ -3,6 +3,7 @@
 TCPServer::TCPServer(QWidget *parent) : QDialog(parent)
 {
     server = new QTcpServer(this);
+    socket = NULL;
     connect(server, &QTcpServer::newConnection, this, &TCPServer::newConnection);
 
     if(!server->listen(QHostAddress::LocalHost, 8888))
@@ -47,12 +48,15 @@ void TCPServer::readyReadHandler()
 
 void TCPServer::SendGameState(QList<int> gameState)
 {
-    QString message;
-    for(int i = 0; i < gameState.size(); i++)
+    if(socket != NULL)
     {
-        message.append(QString::number(gameState[i]) + "\n");
-    }
+        QString message;
+        for(int i = 0; i < gameState.size(); i++)
+        {
+            message.append(QString::number(gameState[i]) + "\n");
+        }
 
-    socket->write(message.toStdString().c_str());
+        socket->write(message.toStdString().c_str());
+    }
 }
 

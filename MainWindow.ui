@@ -51,7 +51,7 @@
    </widget>
    <widget class="QMenu" name="menuNet_Work">
     <property name="title">
-     <string>Net Work</string>
+     <string>Network</string>
     </property>
     <addaction name="actionHost"/>
     <addaction name="actionGuest"/>
@@ -199,6 +199,12 @@
    <property name="text">
     <string>Host</string>
    </property>
+   <property name="statusTip">
+    <string>Host game</string>
+   </property>
+   <property name="shortcut">
+    <string>H</string>
+   </property>
   </action>
   <action name="actionGuest">
    <property name="checkable">
@@ -206,6 +212,12 @@
    </property>
    <property name="text">
     <string>Guest</string>
+   </property>
+   <property name="statusTip">
+    <string>Join game</string>
+   </property>
+   <property name="shortcut">
+    <string>G</string>
    </property>
   </action>
  </widget>
