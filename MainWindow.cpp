@@ -1,6 +1,8 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "renderer.h"
+#include "TCPServer.h"
+#include "TCPClient.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -97,6 +99,9 @@ void MainWindow::connectActions()
     connect(ui->actionSlowDown, &QAction::triggered, this, &MainWindow::decreaseSpeed);
     connect(ui->actionAutoIncrease, &QAction::triggered, this, &MainWindow::autoIncreaseMode);
     connect(ui->actionReset, &QAction::triggered, this, &MainWindow::resetView);
+
+    connect(ui->actionHost, &QAction::triggered, this, &MainWindow::setupServer);
+    connect(ui->actionGuest, &QAction::triggered, this, &MainWindow::setupConnection);
 }
 
 void MainWindow::startNewGame()
@@ -182,4 +187,16 @@ void MainWindow::autoIncreaseMode()
 void MainWindow::resetView()
 {
     m_renderer->ResetView();
+}
+
+void MainWindow::setupServer()
+{
+    server = new TCPServer(this);
+    server->show();
+}
+
+void MainWindow::setupConnection()
+{
+    client = new TCPClient(this);
+    client->show();
 }

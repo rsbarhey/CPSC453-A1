@@ -7,12 +7,15 @@
 #include <QKeyEvent>
 #include <QTimer>
 #include <QActionGroup>
+#include <QDialog>
 
 namespace Ui {
 class MainWindow;
 }
 
 class Renderer;
+class TCPServer;
+class TCPClient;
 
 class MainWindow : public QMainWindow
 {
@@ -27,6 +30,10 @@ protected:
 
 private:
     Ui::MainWindow *ui;
+
+    TCPServer* server;
+    TCPClient* client;
+
     Renderer* m_renderer;
     QTimer* m_timer;
     QTimer* m_autoIncreaseTimer;
@@ -53,6 +60,9 @@ private:
     void multicoloredMode();
 
     void resetView();
+
+    void setupServer();
+    void setupConnection();
 };
 
 #endif // MAINWINDOW_H

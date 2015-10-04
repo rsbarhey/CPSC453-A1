@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -16,12 +16,16 @@ SOURCES += main.cpp\
         MainWindow.cpp \
     renderer.cpp \
     game.cpp \
-    Cube.cpp
+    Cube.cpp \
+    TCPServer.cpp \
+    TCPClient.cpp
 
 HEADERS  += MainWindow.h \
     renderer.h \
     game.h \
-    Cube.h
+    Cube.h \
+    TCPServer.h \
+    TCPClient.h
 
 FORMS    += MainWindow.ui
 

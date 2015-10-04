@@ -49,9 +49,17 @@
     <addaction name="actionAutoIncrease"/>
     <addaction name="separator"/>
    </widget>
+   <widget class="QMenu" name="menuNet_Work">
+    <property name="title">
+     <string>Net Work</string>
+    </property>
+    <addaction name="actionHost"/>
+    <addaction name="actionGuest"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuDraw"/>
    <addaction name="menuGame"/>
+   <addaction name="menuNet_Work"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionQuit">
@@ -182,6 +190,22 @@
    </property>
    <property name="shortcut">
     <string>T</string>
+   </property>
+  </action>
+  <action name="actionHost">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Host</string>
+   </property>
+  </action>
+  <action name="actionGuest">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Guest</string>
    </property>
   </action>
  </widget>
