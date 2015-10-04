@@ -1,5 +1,4 @@
 #include "TCPClient.h"
-#include <QTest>
 
 TCPClient::TCPClient(QWidget* parent) : QDialog(parent)
 {

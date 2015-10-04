@@ -1,5 +1,4 @@
 #include "TCPServer.h"
-#include <QTest>
 
 TCPServer::TCPServer(QWidget *parent) : QDialog(parent)
 {
