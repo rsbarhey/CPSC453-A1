@@ -24,21 +24,15 @@ TCPServer::~TCPServer()
 
 void TCPServer::newConnection()
 {
-    QTcpSocket* socket = server->nextPendingConnection();
+    socket = server->nextPendingConnection();
+    connect(socket, &QTcpSocket::readyRead, this, &TCPServer::readyReadHandler);
 
-    socket->waitForReadyRead(3000);
-    QTextStream cout(stdout);
-    cout << socket->readAll() <<"\n";
-
-    socket->write("Hello client\r\n");
-    socket->flush();
-
-    socket->waitForBytesWritten(3000);
-//    socket->close();
+    emit ClientConnected();
 }
 
-void TCPServer::setupServer()
+void TCPServer::readyReadHandler()
 {
-
+    QTextStream cout(stdout);
+    cout << socket->readAll() <<"\n";
 }
 

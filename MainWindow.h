@@ -35,6 +35,10 @@ private:
     TCPClient* client;
 
     Renderer* m_renderer;
+    Renderer* m_secondRenderer;
+
+    QVBoxLayout* layout;
+
     QTimer* m_timer;
     QTimer* m_autoIncreaseTimer;
 
@@ -63,6 +67,8 @@ private:
 
     void setupServer();
     void setupConnection();
+
+    void connectionEstablished();
 };
 
 #endif // MAINWINDOW_H

@@ -3,28 +3,57 @@
 TCPClient::TCPClient(QWidget* parent) : QDialog(parent)
 {
     socket = new QTcpSocket(this);
-    connect();
 }
 
-void TCPClient::connect()
+TCPClient::~TCPClient()
 {
+}
+
+void TCPClient::EstablishConnection()
+{
+    connect(socket, &QTcpSocket::connected, this, &TCPClient::connected);
+    connect(socket, &QTcpSocket::disconnected, this, &TCPClient::disconnected);
+    connect(socket, &QTcpSocket::readyRead, this, &TCPClient::readyRead);
+    connect(socket, &QTcpSocket::bytesWritten, this, &TCPClient::bytesWritten);
+
     socket->connectToHost("localhost", 8888);
 
-    if(socket->waitForConnected(3000))
+    if(socket->waitForConnected(1000))
     {
-        QTextStream cout(stdout);
-        cout << "Client connected\n";
 
-        socket->write("Hello Server \n\r");
-
-        socket->waitForBytesWritten(1000);
-        socket->waitForReadyRead(3000);
-
-        cout << socket->readAll() << "\n" ;
     }
     else
     {
         QTextStream cout(stdout);
-        cout << "Client could not connect\n";
+        cout << "Client could not connect:\n" << socket->errorString() << "\n";
     }
+}
+
+void TCPClient::connected()
+{
+    emit ConnectedToServer();
+    QTextStream cout(stdout);
+    cout << "Client connected\n";
+}
+
+void TCPClient::disconnected()
+{
+    QTextStream cout(stdout);
+    cout << "Client disconnected\n";
+}
+
+void TCPClient::readyRead()
+{
+    QTextStream cout(stdout);
+    cout << socket->readAll() << "\n" ;
+}
+
+void TCPClient::bytesWritten(qint64 bytes)
+{
+
+}
+
+void TCPClient::SendMessage(QString msg)
+{
+    Q_UNUSED(msg);
 }

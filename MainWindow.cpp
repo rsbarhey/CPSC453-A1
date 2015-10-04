@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
     m_renderer = new Renderer();
 
     // Setup the application's widget collection
-    QVBoxLayout* layout = new QVBoxLayout();
+    layout = new QVBoxLayout();
 
     //add renderer
     layout->addWidget(m_renderer);
@@ -45,6 +45,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QWidget* mainWidget = new QWidget(this);
     mainWidget->setLayout(layout);
     setCentralWidget(mainWidget);
+
+    server = NULL;
+    client = NULL;
 }
 
 MainWindow::~MainWindow()
@@ -191,12 +194,26 @@ void MainWindow::resetView()
 
 void MainWindow::setupServer()
 {
-    server = new TCPServer(this);
-    server->show();
+    if(server == NULL)
+    {
+        server = new TCPServer(this);
+    }
+    connect(server, &TCPServer::ClientConnected, this, &MainWindow::connectionEstablished, Qt::UniqueConnection);
 }
 
 void MainWindow::setupConnection()
 {
-    client = new TCPClient(this);
-    client->show();
+    if(client == NULL)
+    {
+        client = new TCPClient(this);
+    }
+    connect(client, &TCPClient::ConnectedToServer, this, &MainWindow::connectionEstablished, Qt::UniqueConnection);
+    client->EstablishConnection();
+}
+
+void MainWindow::connectionEstablished()
+{
+    m_secondRenderer = new Renderer();
+    layout->addWidget(m_secondRenderer);
+    m_secondRenderer->setMinimumSize(150, 300);
 }

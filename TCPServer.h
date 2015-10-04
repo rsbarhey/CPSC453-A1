@@ -16,14 +16,17 @@ public:
     ~TCPServer();
 
 signals:
+    void ClientConnected();
 
 public slots:
     void newConnection();
 
+private slots:
+    void readyReadHandler();
+
 private:
     QTcpServer* server;
-
-    void setupServer();
+    QTcpSocket* socket;
 };
 
 #endif // TCPSERVER_H
