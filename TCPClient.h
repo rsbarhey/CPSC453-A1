@@ -15,9 +15,10 @@ public:
     void EstablishConnection();
 signals:
     void ConnectedToServer();
+    void RecievedGameState(QList<int>);
 
 public slots:
-    void SendMessage(QString msg);
+    void SendGameState(QList<int> gameState);
 
 private slots:
     void connected();
@@ -27,6 +28,7 @@ private slots:
 
 private:
     QTcpSocket* socket;
+    QList<int> recievedGameBoard;
 };
 
 #endif // TCPCLIENT_H

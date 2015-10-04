@@ -1,4 +1,5 @@
 #include "TCPClient.h"
+#include <QTest>
 
 TCPClient::TCPClient(QWidget* parent) : QDialog(parent)
 {
@@ -44,16 +45,29 @@ void TCPClient::disconnected()
 
 void TCPClient::readyRead()
 {
-    QTextStream cout(stdout);
-    cout << socket->readAll() << "\n" ;
+    recievedGameBoard.clear();
+    QString tmp = socket->readAll();
+    QStringList message = tmp.split('\n');
+    for(int i = 0; i < message.size(); i++)
+    {
+        recievedGameBoard.append(message[i].toInt());
+    }
+
+    emit RecievedGameState(recievedGameBoard);
 }
 
 void TCPClient::bytesWritten(qint64 bytes)
 {
-
+    QTextStream cout(stdout);
+    cout << bytes << "bytes sent\n";
 }
 
-void TCPClient::SendMessage(QString msg)
+void TCPClient::SendGameState(QList<int> gameState)
 {
-    Q_UNUSED(msg);
+    QString message;
+    for(int i = 0; i < gameState.size(); i++)
+    {
+        message.append(QString::number(gameState[i]) + "\n");
+    }
+    socket->write(message.toStdString().c_str());
 }

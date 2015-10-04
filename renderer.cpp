@@ -43,6 +43,7 @@ void Renderer::CreateNewGame()
     {
         m_game->reset();
     }
+    copyGameState();
 }
 
 void Renderer::Tick()
@@ -52,38 +53,63 @@ void Renderer::Tick()
         return;
     }
     m_game->tick();
-
+    copyGameState();
     update();
 }
 
 void Renderer::RotateBlockCW()
 {
+    if(m_game == NULL)
+    {
+        return;
+    }
     m_game->rotateCW();
+    copyGameState();
     update();
 }
 
 void Renderer::RotateBlockCCW()
 {
+    if(m_game == NULL)
+    {
+        return;
+    }
     m_game->rotateCCW();
+    copyGameState();
     update();
 }
 
 void Renderer::MoveBlockLeft()
 {
+    if(m_game == NULL)
+    {
+        return;
+    }
     m_game->moveLeft();
+    copyGameState();
     update();
 }
 
 void Renderer::MoveBlockRight()
 {
+    if(m_game == NULL)
+    {
+        return;
+    }
     m_game->moveRight();
+    copyGameState();
     update();
 }
 
 void Renderer::DropPiece()
 {
+    if(m_game == NULL)
+    {
+        return;
+    }
     if(m_game->drop())
     {
+        copyGameState();
         update();
     }
 }
@@ -107,6 +133,17 @@ void Renderer::MulticoloredMode()
 {
     polygonMode = GL_FILL;
     isMulticolored = true;
+    update();
+}
+
+QList<int> Renderer::GameBoardState()
+{
+    return m_gameBoard;
+}
+
+void Renderer::SetGameBoardState(QList<int> gameBoardState)
+{
+    m_gameBoard = gameBoardState;
     update();
 }
 
@@ -222,15 +259,15 @@ void Renderer::paintGL()
         {
             for (int j = 0; j<10; j++)
             {
-                if (m_game != NULL && m_game->get(i, j) != -1)
+                if (!m_gameBoard.empty() && m_gameBoard[j + 10 *i] != -1)
                 {
                     if(isMulticolored)
                     {
-                        setMultipleColors(m_game->get(i, j));
+                        setMultipleColors(m_gameBoard[j + 10 *i]);
                     }
                     else
                     {
-                        changeCubeColor(m_game->get(i, j));
+                        changeCubeColor(m_gameBoard[j + 10 *i]);
                     }
 
                     boxMatrix.translate((float)j, (float)i, 0.0);
@@ -469,4 +506,20 @@ void Renderer::scaleView(int start, int end)
         scalingMatrix.scale((float)scale/1000 + 1.0);
         update();
     }
+}
+
+void Renderer::copyGameState()
+{
+    m_gameBoard.clear();
+
+    for(int i = 0; i < 24 ; i++)
+    {
+        for(int j = 0; j< 10; j++)
+        {
+            m_gameBoard.append(m_game->get(i, j));
+        }
+    }
+
+    emit GameBoardStateChanged(m_gameBoard);
+    //emit a signal to send the new game board to through the server
 }

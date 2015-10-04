@@ -25,8 +25,13 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+signals:
+
 protected:
     virtual void keyPressEvent(QKeyEvent* event);
+
+private slots:
+    void setGameState(QList<int> gameState);
 
 private:
     Ui::MainWindow *ui;

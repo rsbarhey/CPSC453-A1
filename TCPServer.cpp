@@ -1,4 +1,5 @@
 #include "TCPServer.h"
+#include <QTest>
 
 TCPServer::TCPServer(QWidget *parent) : QDialog(parent)
 {
@@ -32,7 +33,27 @@ void TCPServer::newConnection()
 
 void TCPServer::readyReadHandler()
 {
-    QTextStream cout(stdout);
-    cout << socket->readAll() <<"\n";
+    //QTest::qSleep(1000);
+    recievedGameBoard.clear();
+    QString tmp = socket->readAll();
+
+    QStringList message = tmp.split('\n');
+    for(int i = 0; i < message.size(); i++)
+    {
+        recievedGameBoard.append(message[i].toInt());
+    }
+
+    emit RecievedGameState(recievedGameBoard);
+}
+
+void TCPServer::SendGameState(QList<int> gameState)
+{
+    QString message;
+    for(int i = 0; i < gameState.size(); i++)
+    {
+        message.append(QString::number(gameState[i]) + "\n");
+    }
+
+    socket->write(message.toStdString().c_str());
 }
 

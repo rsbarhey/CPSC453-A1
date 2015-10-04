@@ -199,6 +199,8 @@ void MainWindow::setupServer()
         server = new TCPServer(this);
     }
     connect(server, &TCPServer::ClientConnected, this, &MainWindow::connectionEstablished, Qt::UniqueConnection);
+    connect(m_renderer, &Renderer::GameBoardStateChanged, server, &TCPServer::SendGameState, Qt::UniqueConnection);
+    connect(server, &TCPServer::RecievedGameState, this, &MainWindow::setGameState, Qt::UniqueConnection);
 }
 
 void MainWindow::setupConnection()
@@ -208,6 +210,8 @@ void MainWindow::setupConnection()
         client = new TCPClient(this);
     }
     connect(client, &TCPClient::ConnectedToServer, this, &MainWindow::connectionEstablished, Qt::UniqueConnection);
+    connect(m_renderer, &Renderer::GameBoardStateChanged, client, &TCPClient::SendGameState, Qt::UniqueConnection);
+    connect(client, &TCPClient::RecievedGameState, this, &MainWindow::setGameState, Qt::UniqueConnection);
     client->EstablishConnection();
 }
 
@@ -216,4 +220,11 @@ void MainWindow::connectionEstablished()
     m_secondRenderer = new Renderer();
     layout->addWidget(m_secondRenderer);
     m_secondRenderer->setMinimumSize(150, 300);
+    startNewGame();
+}
+
+void MainWindow::setGameState(QList<int> gameState)
+{
+    //Q_ASSERT(gameState.size() == 240);
+    m_secondRenderer->SetGameBoardState(gameState);
 }

@@ -17,16 +17,20 @@ public:
 
 signals:
     void ClientConnected();
+    void RecievedGameState(QList<int>);
 
 public slots:
-    void newConnection();
+    void SendGameState(QList<int> gameState);
 
 private slots:
+    void newConnection();
     void readyReadHandler();
 
 private:
     QTcpServer* server;
     QTcpSocket* socket;
+
+    QList<int> recievedGameBoard;
 };
 
 #endif // TCPSERVER_H

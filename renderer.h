@@ -61,6 +61,12 @@ public:
 
     void ResetView();
 
+    QList<int> GameBoardState();
+    void SetGameBoardState(QList<int> gameBoardState);
+
+signals:
+    void GameBoardStateChanged(QList<int>);
+
 protected:
 
     // override fundamental drawing functions
@@ -114,6 +120,7 @@ private:
     vector<GLfloat> triNormals;
 
     Game* m_game;
+    QList<int> m_gameBoard;
     Cube cube;
 
     QTimer* timer;
@@ -144,6 +151,8 @@ private:
 
     void rotateView(int start, int end, float x = 0.0, float y = 0.0, float z = 0.0);
     void scaleView(int start, int end);
+
+    void copyGameState();
 };
 
 #endif // RENDERER_H
