@@ -11,19 +11,24 @@ MainWindow::MainWindow(QWidget *parent) :
     // sets up the ui file created by Qt Designer
     ui->setupUi(this);
 
+    //Establish QActionGroup
     m_drawGroup = new QActionGroup(this);
+    //This means any checkable actions in this group will not be checked in the same time
     m_drawGroup->setExclusive(true);
 
+    //Fill in the actiongroup with draw items (only one mode will be active at a time)
     QList<QAction*> actions = ui->menuDraw->actions();
     foreach(QAction* action, actions)
     {
         m_drawGroup->addAction(action);
     }
 
+    //This is the game timera and by default it's 500ms
     m_timer = new QTimer(this);
     m_timer->setInterval(500);
     m_paused = false;
 
+    //This is the auto increment mode and it will increase the game speed every 5 seconds
     m_autoIncreaseTimer = new QTimer(this);
     m_autoIncreaseTimer->setInterval(5000);
     connect(m_autoIncreaseTimer, &QTimer::timeout, this, &MainWindow::increaseSpeed);
@@ -34,6 +39,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Create the main drawing object
     m_renderer = new Renderer();
+
+    // mini drawing object for multiplayer
     m_secondRenderer = NULL;
 
     // Setup the application's widget collection
@@ -47,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mainWidget->setLayout(layout);
     setCentralWidget(mainWidget);
 
+    // a TCP server/client
     server = NULL;
     client = NULL;
 }
@@ -60,34 +68,33 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
 {
     if(!m_paused)
     {
-        if(event->key() == Qt::Key_Left)
+        switch(event->key())
         {
-            m_renderer->MoveBlockLeft();
-        }
+            case Qt::Key_Left:
+                m_renderer->MoveBlockLeft();
+                break;
 
-        else if(event->key() == Qt::Key_Right)
-        {
-            m_renderer->MoveBlockRight();
-        }
+            case Qt::Key_Right:
+                m_renderer->MoveBlockRight();
+                break;
 
-        else if(event->key() == Qt::Key_Up)
-        {
-            m_renderer->RotateBlockCCW();
-        }
+            case Qt::Key_Up:
+                m_renderer->RotateBlockCCW();
+                break;
 
-        else if(event->key() == Qt::Key_Down)
-        {
-            m_renderer->RotateBlockCW();
-        }
+            case Qt::Key_Down:
+                m_renderer->RotateBlockCW();
+                break;
 
-        else if(event->key() == Qt::Key_Space)
-        {
-            m_renderer->DropPiece();
-        }
+            case Qt::Key_Space:
+                m_renderer->DropPiece();
+                break;
+            case Qt::Key_Backspace:
+                m_renderer->Tick();
+                break;
 
-        else if(event->key() == Qt::Key_Backspace)
-        {
-            m_renderer->Tick();
+            default:
+                break;
         }
     }
 }
