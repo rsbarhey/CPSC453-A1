@@ -1,8 +1,8 @@
 CPSC453 - Assignment 1
 
-NAME:
-UCID Number:
-Tutorial Section:
+NAME: Ragheb Saad Barheyan
+UCID Number: 10090103
+Tutorial Section: T01
 
 === 1. EXECUTION: ===
 
@@ -115,26 +115,43 @@ Network:
 
 === 4. FILES SUBMITTED: ===
 
-
+    Cube.h
+    Cube.ccp
+    game.h
+    game.cpp
+    main.cpp
+    MainWindow.h
+    MainWindow.cpp
+    MainWindow.ui
+    per-fragment-phong.vs.glsl
+    per-fragment-phong.fs.glsl
+    README
+    renderer.h
+    renderer.cpp
+    resources.qrc
+    TCPClient.h
+    TCPClient.cpp
+    TCPServer.h
+    TCPServer.cpp
 
 === 5. PROGRAM ASSUMPTIONS: ===
 
-<Insert a short description of any assumptions made>
+Since the network works on localhost, it should also work anywhere else if I changed where the TCPserver is runnning without need to make any further modification
 
 === 6. DECLARATION AND IMAGE PERMISSION: ===
 
 <Initial the following:>
 
-__ I have read the regulations regarding plagarism. I affirm with my initials
+R.B. I have read the regulations regarding plagarism. I affirm with my initials
 that I have worked on my own solution to this assignment, and the code I am
 submitting is my own.
 
 <Mark with an X if desired. No marks will be deducted either way>
 
-__ I grant the instructor and/or TAs permission to use images submitted and/or
+R.B. I grant the instructor and/or TAs permission to use images submitted and/or
    assignment screenshots for future CPSC453 courses.
 
 __ If permission has been granted above, I would prefer the images to remain 
    annonymous. <Otherwise credit will be given, as is due>
 
-__
+R.B.
