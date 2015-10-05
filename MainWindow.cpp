@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Create the main drawing object
     m_renderer = new Renderer();
+    m_secondRenderer = NULL;
 
     // Setup the application's widget collection
     layout = new QVBoxLayout();
@@ -217,9 +218,12 @@ void MainWindow::setupConnection()
 
 void MainWindow::connectionEstablished()
 {
-    m_secondRenderer = new Renderer();
-    layout->addWidget(m_secondRenderer);
-    m_secondRenderer->setMinimumSize(150, 300);
+    if(m_secondRenderer == NULL)
+    {
+        m_secondRenderer = new Renderer();
+        layout->addWidget(m_secondRenderer);
+        m_secondRenderer->setMinimumSize(150, 300);
+    }
     startNewGame();
 }
 
