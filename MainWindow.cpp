@@ -26,7 +26,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //This is the game timera and by default it's 500ms
     m_timer = new QTimer(this);
     m_timer->setInterval(500);
-    m_paused = false;
 
     //This is the auto increment mode and it will increase the game speed every 5 seconds
     m_autoIncreaseTimer = new QTimer(this);
@@ -66,6 +65,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::keyPressEvent(QKeyEvent* event)
 {
+    //If the game is not paused handle the following key presses
     if(!m_paused)
     {
         switch(event->key())
@@ -89,6 +89,7 @@ void MainWindow::keyPressEvent(QKeyEvent* event)
             case Qt::Key_Space:
                 m_renderer->DropPiece();
                 break;
+
             case Qt::Key_Backspace:
                 m_renderer->Tick();
                 break;
@@ -119,32 +120,39 @@ void MainWindow::startNewGame()
 {
     // initialize the game
     m_renderer->CreateNewGame();
+    //connect the timeout to ticking the game, needs to be other wise if you clicked new game multiple times the tick will get called as many times
     connect(m_timer, &QTimer::timeout, this, &MainWindow::tick, Qt::UniqueConnection);
-    connect(ui->actionPause, &QAction::triggered, this, &MainWindow::pause);
+    connect(ui->actionPause, &QAction::triggered, this, &MainWindow::pause, Qt::UniqueConnection);
     m_timer->start();
+    m_paused = false;
 }
 
 void MainWindow::tick()
 {
-    // tick the game if it's not paused
+    //tick the game
     m_renderer->Tick();
 }
 
 void MainWindow::pause()
 {
+    // if timer is running pause the game, as well as the autoIncrease timer, in case it's in that mode, (we don't want the game speed to increase when it's paused)
     if(m_timer->isActive())
     {
         m_timer->stop();
         m_autoIncreaseTimer->stop();
     }
+
+    // Otherwise unpause the game
     else
     {
         m_timer->start();
+        // If the game is in auto increase mode unpause this timer
         if(m_autoIncrease)
         {
             m_autoIncreaseTimer->start();
         }
     }
+    // This is used for checking in other methods
     m_paused = !(m_timer->isActive());
 }
 
@@ -165,7 +173,9 @@ void MainWindow::multicoloredMode()
 
 void MainWindow::increaseSpeed()
 {
+    // decrease time, in other words increase the game speed
     int time = m_timer->interval() - 50;
+    // There's no such thing as negative time (unless we can time travel)
     if(time > 0)
     {
         m_timer->setInterval(time);
@@ -175,6 +185,7 @@ void MainWindow::increaseSpeed()
 void MainWindow::decreaseSpeed()
 {
     int time = m_timer->interval() + 50;
+    // decrease the speed and the limit is 2 seconds per tick (which is really really slow)
     if(time < 2000)
     {
         m_timer->setInterval(time);
@@ -225,17 +236,19 @@ void MainWindow::setupConnection()
 
 void MainWindow::connectionEstablished()
 {
+    // initialize the second drawing object if it's null
     if(m_secondRenderer == NULL)
     {
         m_secondRenderer = new Renderer();
         layout->addWidget(m_secondRenderer);
         m_secondRenderer->setMinimumSize(150, 300);
     }
+    // start new game when connection is fine
     startNewGame();
 }
 
 void MainWindow::setGameState(QList<int> gameState)
 {
-    //Q_ASSERT(gameState.size() == 240);
+    // this is used for multiplayer mode
     m_secondRenderer->SetGameBoardState(gameState);
 }

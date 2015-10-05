@@ -17,12 +17,15 @@ public:
     const vector<float>& CubeColor();
     const vector<float>& CubeNormals();
 
+    // Changes the cube color depending on which
     void ChangeCubeColor(int id);
-
+    // Changes the faces color depending on given id (refer to README for extensive explaination of the algorithm)
     void SetMutlipleColors(int id);
 
 private:
+    // This generate 42 color, all which are unique (refer to README for extensive explaination of the algorithm)
     void generateUniqueRandomColor();
+    // This constructs a list of 0 - 255 (color channel)
     void constructColorList(QList<int>& list);
 
     QList<QColor> colorList;

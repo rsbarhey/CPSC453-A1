@@ -44,6 +44,7 @@ void TCPClient::disconnected()
 
 void TCPClient::readyRead()
 {
+    // Read the game state and convert it to QList<int> for the second drawing object
     recievedGameBoard.clear();
     QString tmp = socket->readAll();
     QStringList message = tmp.split('\n');
@@ -63,6 +64,7 @@ void TCPClient::bytesWritten(qint64 bytes)
 
 void TCPClient::SendGameState(QList<int> gameState)
 {
+    // Send our own game state
     QString message;
     for(int i = 0; i < gameState.size(); i++)
     {

@@ -41,11 +41,10 @@ Cube::Cube(QObject *parent) : QObject(parent)
     float normalList [] = { 0.0f, 0.0f, 1.0f }; // facing viewer
     for (int v = 0; v < m_cube.size()/3; v++)
     {
-        // to change color change them every four iteration
         m_cubeColor.insert(m_cubeColor.end(), colourList, colourList + 3); // 3 coordinates per vertex
         m_cubeNormals.insert(m_cubeNormals.end(), normalList, normalList + 3); // 3 coordinates per vertex
     }
-
+    // generate it once!
     generateUniqueRandomColor();
 }
 
@@ -73,7 +72,6 @@ void Cube::ChangeCubeColor(int id)
 
     for (int v = 0; v < m_cube.size()/3; v++)
     {
-        // to change color change them every four iteration
         m_cubeColor.insert(m_cubeColor.end(), colourList, colourList + 3); // 3 coordinates per vertex
     }
 }
@@ -84,7 +82,6 @@ void Cube::SetMutlipleColors(int id)
     QColor color;
     int colorIndex = id * 6;
 
-
     for (int v = 0; v < m_cube.size()/3; v++)
     {
         if(v % 4 == 0)
@@ -94,7 +91,6 @@ void Cube::SetMutlipleColors(int id)
         }
 
         float colourList [] = { (float)color.redF(), (float)color.greenF(), (float)color.blueF() };
-        // to change color change them every four iteration
         m_cubeColor.insert(m_cubeColor.end(), colourList, colourList + 3); // 3 coordinates per vertex
     }
 }

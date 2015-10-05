@@ -59,12 +59,17 @@ public:
     void FaceMode();
     void MulticoloredMode();
 
+    // Reset the view
     void ResetView();
 
+    // This is copy of the game board state from the game object
     QList<int> GameBoardState();
+
+    // This is used only for newtwork playing updates game board state of the other player
     void SetGameBoardState(QList<int> gameBoardState);
 
 signals:
+    // Emitted when your own game board state changes (to send the new game state through the network)
     void GameBoardStateChanged(QList<int>);
 
 protected:
@@ -92,6 +97,7 @@ protected:
     virtual void mouseMoveEvent(QMouseEvent * event);
 
 private slots:
+    // a slot for persistence rotation
     void rotateView();
 private:
 

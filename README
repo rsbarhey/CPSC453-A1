@@ -8,20 +8,81 @@ Tutorial Section:
 
 To compile the program, on the terminal enter the following commands:
 
-	qmake -project QT+=widgets
-	qmake
+        qmake -project QT+=widgets QT+=network
+        qmake
 	make
 
 To run the program, on the terminal enter the following command:
 
-	./a1
+        ./A1
 
 === 2. PROGRAM USE: ===
 
-<Insert a precise user manual on how to interact with the program; eg. 
-short-cut keys, mouse movements, menu items, widgets, etc.>
+Menu items:
+-Here is description of Menus and the items inside them, note the each item will have a letter in bracket which is the shortcut key for that item
+    File menu:
+        New Game(N): This will create a new game, and if your already playing it will reset to new game
+        Reset(R): This will reset your view to default
+        Quit(Q): This will quit the application
+
+    Draw menu:
+        Wireframe(W): This will change the drawing mode to wireframe, where the edges are only drawn
+        Face(F): This will change the drawing mode to filled. Each block will have it's own color in this mode
+        Multicolored(M): This will change the drawing mode to multicolored. Each block will have 6 different colors for each face of the cube constructing them. No two tetris block will share a face color.
+
+    Game menu:
+        Pause(P): This will pause/unpause your game.
+        Speed Up(PgUp): This will increase the speed in which the tetris blocks are falling to a minimum of 50 ms (Note the game default speed is 500ms)
+        Slow Down (PgDown): This will decrease the speed in which the tetris blocks are falling to a maximum of 2000ms
+        Auto-Increase(A): This will automatically increase the speed in which the tetris blocks are falling every 5 seconds
+
+    Network - Prototype:
+        Host(H): This will establish a TCP server to host a game
+        Gues(G): This will attempt to connect to a TCP server to join a game
+
+Gameplay Control:
+    Left Arrow: This will move the tetris block left
+    Right Arrow: This will move the tetris block right
+    Up Arrow: This will rotate the tetris block counter clockwise
+    Down Arrow: This will rotate the tetris block clockwise
+    Spacebar: This will instantly drop the tetris block
+    Backspace: This will increase the speed in which tetris block is falling (Better version of the Drop block feature)
+
+View Control:
+    Left Mouse Click and Drag: Left Clicking and dragging will rotate the view around the x Axis
+    Middle Mouse Click and Drag: Middle Clicking and dragging will rotate the view around the y Axis
+    Right Mouse Click and Drag: Right clicking and dragging will rotate the view around the z Axis
+    ****Note that if you realsed the mouse button while moving, the persistence rotation will start.
+
+    Shift + Any Mouse Button and Drag: This will zoom out when dragging left, and in when draging right
+    ****Note releasing the shift key while still holding the mouse click will not switch to rotating.
+
+Network Interaction(Prototype):
+****Note that this is a prototype, and there is a couple workflows that needs to be handled (will be mentioned in the known bugs section)
+    Steps to establish Multiplayer:
+        1- Launch an instance of the app
+        2- Click on the Network menu and choose Host (or alternatively press H), Check your terminal and Check for "Server started!"
+        3- Launch another instance of the app
+        4- Click on the Network menu and this time choose Guest (or alternatively press G)
+        5- If successful in both instances it will add a mini renderer(small game window) and add it to below the main game running
+****The server and the client will only transmit the board state to each other, so basically in the app mini renderer will be an exact copy of whatever is happenning in the other instance of the app.
+
+*******Known Network Bugs********
+    Crashing:
+        1- Workflow (1)
+            a- If you run your the first instance and click on Guest(G)
+            b- Run the second instance and click on Host(H)
+            c- Go back to the first instance and click on Gues(G)  ====> This will cause the instace to crash
+    Messing features:
+        a- There is no way to close the server or close the connection from the client
+        b- If there is a multiplayer going, and one of the app instances is closed, the instance will not throw away the mini renderer. and instead it will be there in "pause mode"
+        c- No way of telling which player won, because the network is only a copy paste of the game state in the other instance
+
 
 == 3. ALGORITHMS and DESIGN DECISIONS: ===
+
+SetMultipleColors()
+generateUniqueRandomColor()
 
 <Insert a description of the algorithms created and design decisions taken>
 

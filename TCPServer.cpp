@@ -33,7 +33,7 @@ void TCPServer::newConnection()
 
 void TCPServer::readyReadHandler()
 {
-    //QTest::qSleep(1000);
+    //Send our own game state
     recievedGameBoard.clear();
     QString tmp = socket->readAll();
 

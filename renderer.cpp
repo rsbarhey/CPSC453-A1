@@ -35,6 +35,7 @@ Renderer::~Renderer()
 
 void Renderer::CreateNewGame()
 {
+    // if null initialize otherwise reset it
     if(m_game == NULL)
     {
         m_game = new Game(10, 24);
@@ -43,74 +44,82 @@ void Renderer::CreateNewGame()
     {
         m_game->reset();
     }
+    // copy the game state to send it through the network and to draw
     copyGameState();
 }
 
 void Renderer::Tick()
 {
+    // don't do anything if the game is NULL
     if(m_game == NULL)
     {
         return;
     }
     m_game->tick();
-    copyGameState();
-    update();
+    copyGameState();            //update for network, and draw
+    update();                   // actually draw
 }
 
 void Renderer::RotateBlockCW()
 {
+    // don't do anything if the game is NULL
     if(m_game == NULL)
     {
         return;
     }
     m_game->rotateCW();
-    copyGameState();
-    update();
+    copyGameState();            //update for network, and draw
+    update();                   //actually draw
 }
 
 void Renderer::RotateBlockCCW()
 {
+    // don't do anything if game is  NULL
     if(m_game == NULL)
     {
         return;
     }
     m_game->rotateCCW();
-    copyGameState();
-    update();
+    copyGameState();            //update for network, and draw
+    update();                   //actually draw
 }
 
 void Renderer::MoveBlockLeft()
 {
+    // don't do anything if game is NULL
     if(m_game == NULL)
     {
         return;
     }
     m_game->moveLeft();
-    copyGameState();
-    update();
+    copyGameState();            //update for network, and draw
+    update();                   //actually draw
 }
 
 void Renderer::MoveBlockRight()
 {
+    // don't do anything if game is NULL
     if(m_game == NULL)
     {
         return;
     }
     m_game->moveRight();
-    copyGameState();
-    update();
+    copyGameState();            //update for network, and draw
+    update();                   //actually draw
 }
 
 void Renderer::DropPiece()
 {
+    // don't do anything if game is NULL
     if(m_game == NULL)
     {
         return;
     }
+
     if(m_game->drop())
     {
-        copyGameState();
-        update();
+        copyGameState();        // if dropped successfully update for network, and draw
+        update();               // actually draw
     }
 }
 
@@ -193,8 +202,8 @@ void Renderer::paintGL()
     QMatrix4x4 view_matrix;
     view_matrix.translate(0.0f, 0.0f, -40.0f);
 
-    view_matrix = view_matrix * scalingMatrix;
-    view_matrix = view_matrix * roataionMatrix;
+    view_matrix = view_matrix * scalingMatrix;  //Scaling matrix is either the identity or a composite of previous and current scaling transformation
+    view_matrix = view_matrix * roataionMatrix; //rotation matrix is either the identity or a composite of previous and current rotataion
 
 
     glUniformMatrix4fv(m_VMatrixUniform, 1, false, view_matrix.data());
@@ -216,6 +225,7 @@ void Renderer::paintGL()
     // corners of the game board.
     // draw border
 
+    // Change the color of the border
     changeCubeColor(7);
     if (cube.CubeVertices().size() > 0)
     {
@@ -259,8 +269,11 @@ void Renderer::paintGL()
         {
             for (int j = 0; j<10; j++)
             {
+                // doing drawing on m_gameBoard which is copy of border_ from the game object
+                // instead of using m_game->get(r,c), m_gameBoard needs to be used for network feature to work properly
                 if (!m_gameBoard.empty() && m_gameBoard[j + 10 *i] != -1)
                 {
+                    // Check in which mode should the cube colors be
                     if(isMulticolored)
                     {
                         setMultipleColors(m_gameBoard[j + 10 *i]);
@@ -269,10 +282,11 @@ void Renderer::paintGL()
                     {
                         changeCubeColor(m_gameBoard[j + 10 *i]);
                     }
-
+                    // draw the box in it's correct position
                     boxMatrix.translate((float)j, (float)i, 0.0);
                     glUniformMatrix4fv(m_MMatrixUniform, 1, false, boxMatrix.data());
                     glDrawArrays(GL_QUADS, 0, cube.CubeVertices().size()/3); // 3 coordinates per vertex
+                    // reset back to 0, 0 so next box gets drawn properly
                     boxMatrix.translate((float)-j, (float)-i, 0.0);
                 }
             }
@@ -368,8 +382,10 @@ void Renderer::setupCube()
 
 void Renderer::setupColorVbo(int id)
 {
+    // adds a new vbo color to colorVbos map with a key id
     if(!colorVbos.contains(id))
     {
+        //if entry doesn't exist for key id, add it with current color of the cube
         GLuint colorVbo[1];
         glGenBuffers(1, colorVbo);
         colorVbos.insert(colorVbos.end(), id, colorVbo[0]);
@@ -378,6 +394,7 @@ void Renderer::setupColorVbo(int id)
 
 void Renderer::switchColorVbo(int id)
 {
+    // switch to the correct vbo color buffer
     if(colorVbos.contains(id))
     {
         glBindBuffer(GL_ARRAY_BUFFER, colorVbos.value(id));
@@ -388,14 +405,15 @@ void Renderer::switchColorVbo(int id)
 
 void Renderer::changeCubeColor(int id)
 {
-    cube.ChangeCubeColor(id);
-    setupColorVbo(id);      // bind correct colorVbo
-    switchColorVbo(id);
+    cube.ChangeCubeColor(id);   // change the current cube color
+    setupColorVbo(id);      // if that color is new added to colorVbos map
+    switchColorVbo(id);     // bind correct colorVbo
 }
 
 void Renderer::setMultipleColors(int id)
 {
     cube.SetMutlipleColors(id);
+    // id for face mode start at 0, id for multicolor mode start at 9
     setupColorVbo(9+id);
     switchColorVbo(9+id);
 }
@@ -419,7 +437,6 @@ void Renderer::mouseReleaseEvent(QMouseEvent * event)
     m_button = Qt::NoButton;
     if(timer->isActive() && m_modifier != Qt::ShiftModifier)
     {
-        // implement presistent rotation here
         cout << timer->remainingTime() << "Time between move and release is 15ms.\n";
         persistenceTimer->start();
     }
@@ -448,7 +465,7 @@ void Renderer::mouseMoveEvent(QMouseEvent * event)
         rotateView(m_mouseStart, m_mouseEnd, 0.0, 0.0, 1.0);
     }
 
-    else if(m_button == Qt::LeftButton  && m_modifier == Qt::ShiftModifier)
+    else if((m_button == Qt::LeftButton || m_button == Qt::MiddleButton || m_button == Qt::RightButton) && m_modifier == Qt::ShiftModifier)
     {
         scaleView(m_mouseStart, m_mouseEnd);
     }
@@ -470,6 +487,7 @@ void Renderer::rotateView(int start, int end, float x, float y, float z)
     this->y = y;
     this->z = z;
 
+    // rotation is not applied directly to the view matrix but instead is applied to this matrix and the view matrix is multiplied by this
     roataionMatrix.rotate(angle, x, y, z);
     update();
 }
@@ -483,6 +501,7 @@ void Renderer::rotateView()
 void Renderer::ResetView()
 {
     persistenceTimer->stop();
+    //Reset the rotation and scaling matrices to identity
     roataionMatrix = QMatrix4x4();
     scalingMatrix = QMatrix4x4();
     update();
@@ -503,6 +522,7 @@ void Renderer::scaleView(int start, int end)
     if(totalScaleFactor + scale >= MIN_SCALE_FACTOR && totalScaleFactor + scale <= MAX_SCALE_FACTOR)
     {
         totalScaleFactor += scale;
+        // scaling is not applied directly to the view matrix but instead is applied to this matrix and the view matrix is multiplied by this
         scalingMatrix.scale((float)scale/1000 + 1.0);
         update();
     }
@@ -520,6 +540,6 @@ void Renderer::copyGameState()
         }
     }
 
+    // This signal is emmited to to tell the server or client to send the new game state
     emit GameBoardStateChanged(m_gameBoard);
-    //emit a signal to send the new game board to through the server
 }

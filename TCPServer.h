@@ -16,6 +16,7 @@ public:
     ~TCPServer();
 
 signals:
+    // Signals is emmited when a client is connected
     void ClientConnected();
     void RecievedGameState(QList<int>);
 
