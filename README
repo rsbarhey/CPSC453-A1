@@ -80,16 +80,42 @@ Network Interaction(Prototype):
 
 
 == 3. ALGORITHMS and DESIGN DECISIONS: ===
-
-SetMultipleColors()
 generateUniqueRandomColor()
+Generate multiple color genrate three list of length 256, each one represent a color channel.
+Then it constructs 42 color list by takning a random red index, removing it from the red channel list. the same also applies for green and blue.
+The removing part gaurentees that there will be 42 different colors.
+We choose 42 colors because there is 7 types of cubes (7 from tetris blocks)  each containing 6 faces (6 * 7 = 42).
 
-<Insert a description of the algorithms created and design decisions taken>
+SetMultipleColors(int id)
+Takes a block id. The starting index for a block with id is id * 6.
+then we will pick the color for our 42 color list and for pick a color for a face, then increment (id * 6) by one for the next face and so on
+****Note that the border
+example for id 0
+First face color index 0
+Second face color index 1
+...
+Sixth face color index 5
+
+example for id 6
+First face color index 36
+Second face color index 37
+...
+Sixth face color index 41
+
+
+Drawing the Game State:
+I had to make a decision here where I have to copy the game state from the Game into a local QList<int>gameBoardState in renderer.
+The drawing will happen on gameBoardState instead of m_game->get(r, c). The reason I did so that network playing works. and having the ability to set gameStateBoard outside the renderer class is important for Network playing where we send the game state
+
+Network:
+    Sending Direction-
+        Each time the gameBoardState changes get a copy of it send it to the server or the client
+    Recieving Direction-
+        Each time we recieve gameBoardState, call m_secondRenderer->SetGameState(recieved gameBoardState) and in that function there is an update.
 
 === 4. FILES SUBMITTED: ===
 
-<Insert a list of files that have been submitted by the assignment in case
-there is a discrepancy in the submission>
+
 
 === 5. PROGRAM ASSUMPTIONS: ===
 
